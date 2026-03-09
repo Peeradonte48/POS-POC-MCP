@@ -12,35 +12,35 @@ const img = (id: string) => `https://images.unsplash.com/photo-${id}?w=400&h=400
 
 const images = {
   // A RAMEN
-  tonkotsu:      img("1569718212165-3a8922ada9a4"),
+  tonkotsu:      img("1590301157890-4810ed352733"),
   shoyu:         img("1591814468924-caf88d1232e1"),
   miso:          img("1617093727343-374698b1b08d"),
   tantan:        img("1623341214825-9f4f963727da"),
-  vegRamen:      img("1547928578-bca3e90e8e56"),
+  vegRamen:      img("1585032226651-759b368d7246"),
   gyoza:         img("1496116218417-1a781b1c416c"),
-  edamame:       img("1564834724105-918b73033155"),
-  karaage:       img("1562967916-eb82221dfb2a"),
+  edamame:       img("1622205313162-be1d5712a43f"),
+  karaage:       img("1529692236671-f1f6cf9683ba"),
   chashuDon:     img("1526318896980-cf78c088247c"),
   katsuDon:      img("1585032226651-759b368d7246"),
   extraChashu:   img("1555939594-58d7cb561ad1"),
-  extraEgg:      img("1482049016530-d981e5db9e12"),
+  extraEgg:      img("1510693206972-df098062cb71"),
   extraNoodles:  img("1612929633738-8fe44f7ec841"),
-  icedGreenTea:  img("1556881286-fc6a1e5e0820"),
+  icedGreenTea:  img("1556679343-c7306c1976bc"),
   ramune:        img("1625772299848-391b6a87d7b3"),
   // Burger Lab
   classicBurger: img("1568901346375-23c9450c58cd"),
   doubleBurger:  img("1553979459-d2229ba7433b"),
   baconBurger:   img("1594212699903-ec8a3eca50f5"),
-  mushroomBurger:img("1572802419224-296b0aeee15d"),
-  veggieBurger:  img("1520072959219-c595e76c6b92"),
+  mushroomBurger:img("1550547660-d9450f859349"),
+  veggieBurger:  img("1525059696034-4967a8e1dca2"),
   fries:         img("1573080496219-bb080dd4f877"),
   onionRings:    img("1639024471283-03518883512d"),
   coleslaw:      img("1625938144755-652e08e359b7"),
   vanillaShake:  img("1572490122747-3968b75cc699"),
   chocoShake:    img("1541658016709-82535e94bc69"),
-  strawShake:    img("1579954354917-f9fba61a1cee"),
+  strawShake:    img("1497534446932-c925b458314e"),
   cola:          img("1554866585-cd94860890b7"),
-  sprite:        img("1625772452859-163c51cd81ae"),
+  sprite:        img("1622483767028-3f66f32aef97"),
   brownie:       img("1606313564200-e75d5e30476c"),
   churros:       img("1624353365286-3f8d62daad51"),
 };
@@ -52,6 +52,12 @@ async function seed() {
   const db = drizzle(pool);
 
   console.log("Seeding database...");
+
+  // Truncate all tables (order matters due to foreign keys)
+  await db.execute(
+    `TRUNCATE TABLE modifier_options, modifier_groups, menu_items, menu_categories, terminals, users, locations, brands CASCADE`
+  );
+  console.log("Truncated existing data");
 
   // Hash passwords and PINs
   const adminPasswordHash = await bcrypt.hash("admin123", 10);

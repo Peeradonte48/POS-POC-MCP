@@ -212,7 +212,7 @@ export function OrderPanel({
 
         <Button
           className="w-full h-12 text-base font-semibold gap-2 rounded-xl cursor-pointer"
-          disabled
+          disabled={items.length === 0}
         >
           <ChefHat className="h-5 w-5" />
           Send to Kitchen
