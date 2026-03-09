@@ -49,12 +49,14 @@ Plans:
   3. Staff can create counter/queue orders that receive auto-incrementing order numbers
   4. Staff can edit an order (change quantities, remove items, add notes) before it is sent to kitchen
   5. Manager can void items or entire orders with reason tracking and authorization required
-**Plans**: TBD
+**Plans:** 5 plans
 
 Plans:
-- [ ] 02-01: TBD
-- [ ] 02-02: TBD
-- [ ] 02-03: TBD
+- [ ] 02-01-PLAN.md -- Order schema (DB tables + enums), permissions update, and test scaffold (TDD)
+- [ ] 02-02-PLAN.md -- Order API routes: create, get, add round, table transfer
+- [ ] 02-03-PLAN.md -- Table status API + /tables page with live color indicators and elapsed time
+- [ ] 02-04-PLAN.md -- Menu page + order panel wired to persistent API (useOrder hook, send-to-kitchen mutation, round grouping)
+- [ ] 02-05-PLAN.md -- Void flow: manager PIN verification API, item/order void endpoints, VoidReasonDialog component
 
 ### Phase 3: Kitchen Communication
 **Goal**: Orders submitted by front-of-house appear instantly in the kitchen via KDS and/or thermal printer, and kitchen status updates flow back to servers in real-time
@@ -132,7 +134,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation & Multi-Brand Setup | 1/4 | In progress | - |
-| 2. Order Flow & Table Management | 0/3 | Not started | - |
+| 2. Order Flow & Table Management | 0/5 | Not started | - |
 | 3. Kitchen Communication | 0/3 | Not started | - |
 | 4. Billing & Payments | 0/4 | Not started | - |
 | 5. Promotions & Reporting | 0/3 | Not started | - |
@@ -140,4 +142,4 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 
 ---
 *Roadmap created: 2026-03-09*
-*Last updated: 2026-03-09*
+*Last updated: 2026-03-10*
