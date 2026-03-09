@@ -31,12 +31,13 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. Admin can manage multiple brands and locations from a single admin interface with brand-specific settings (logo, tax ID, service charge, printers)
   4. Cashier, manager, and admin roles exist with appropriate permission boundaries (e.g., cashier cannot access admin settings)
   5. All UI is built with shadcn/ui components and renders correctly
-**Plans:** 3 plans
+**Plans:** 4 plans
 
 Plans:
-- [ ] 01-01-PLAN.md -- Project scaffolding, database schema, auth system with RBAC
-- [ ] 01-02-PLAN.md -- Admin panel with brand/location/staff management and ERP sync
-- [ ] 01-03-PLAN.md -- POS floor interface with PIN login, menu browsing, and modifier selection
+- [ ] 01-01-PLAN.md -- Project scaffolding and database schema with seed data
+- [ ] 01-02-PLAN.md -- Auth system (PIN + password), RBAC permissions, route protection
+- [ ] 01-03-PLAN.md -- Admin panel with brand/location/staff management and ERP sync
+- [ ] 01-04-PLAN.md -- POS floor interface with PIN login, menu browsing, and modifier selection
 
 ### Phase 2: Order Flow & Table Management
 **Goal**: Staff can create, edit, and manage orders for both table service and counter service, with the full order lifecycle working end-to-end
@@ -130,7 +131,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation & Multi-Brand Setup | 0/3 | Planning complete | - |
+| 1. Foundation & Multi-Brand Setup | 0/4 | Planning complete | - |
 | 2. Order Flow & Table Management | 0/3 | Not started | - |
 | 3. Kitchen Communication | 0/3 | Not started | - |
 | 4. Billing & Payments | 0/4 | Not started | - |

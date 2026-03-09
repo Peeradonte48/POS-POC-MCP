@@ -2,7 +2,7 @@
 phase: 1
 slug: foundation-multi-brand-setup
 status: draft
-nyquist_compliant: false
+nyquist_compliant: true
 wave_0_complete: false
 created: 2026-03-09
 ---
@@ -38,19 +38,19 @@ created: 2026-03-09
 
 | Task ID | Plan | Wave | Requirement | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|-----------|-------------------|-------------|--------|
-| 01-01-01 | 01 | 1 | MENU-01 | unit | `npx vitest run src/db/__tests__/menu-queries.test.ts -t "categories"` | ❌ W0 | ⬜ pending |
-| 01-01-02 | 01 | 1 | MENU-02 | unit | `npx vitest run src/db/__tests__/menu-queries.test.ts -t "modifiers"` | ❌ W0 | ⬜ pending |
-| 01-01-03 | 01 | 1 | MENU-03 | unit | `npx vitest run src/components/__tests__/modifier-sheet.test.tsx -t "notes"` | ❌ W0 | ⬜ pending |
-| 01-01-04 | 01 | 1 | MENU-04 | unit | `npx vitest run src/lib/__tests__/erp-sync.test.ts` | ❌ W0 | ⬜ pending |
-| 01-01-05 | 01 | 1 | MENU-05 | unit | `npx vitest run src/db/__tests__/menu-queries.test.ts -t "brand scope"` | ❌ W0 | ⬜ pending |
-| 01-02-01 | 02 | 1 | MBML-01 | unit | `npx vitest run src/db/__tests__/brand-queries.test.ts` | ❌ W0 | ⬜ pending |
-| 01-02-02 | 02 | 1 | MBML-02 | unit | `npx vitest run src/db/__tests__/brand-queries.test.ts -t "branding"` | ❌ W0 | ⬜ pending |
-| 01-02-03 | 02 | 1 | MBML-03 | integration | `npx vitest run src/app/api/__tests__/brands.test.ts` | ❌ W0 | ⬜ pending |
-| 01-02-04 | 02 | 1 | MBML-04 | unit | `npx vitest run src/db/__tests__/location-queries.test.ts` | ❌ W0 | ⬜ pending |
-| 01-02-05 | 02 | 1 | MBML-05 | unit | `npx vitest run src/lib/__tests__/permissions.test.ts` | ❌ W0 | ⬜ pending |
-| 01-03-01 | 03 | 1 | UIUX-03 | smoke | `npx vitest run src/components/__tests__/smoke.test.tsx` | ❌ W0 | ⬜ pending |
+| 01-01-01 | 01 | 1 | MENU-01 | unit | `npx vitest run src/db/__tests__/menu-queries.test.ts -t "categories"` | :x: W0 | :white_large_square: pending |
+| 01-01-02 | 01 | 1 | MENU-02 | unit | `npx vitest run src/db/__tests__/menu-queries.test.ts -t "modifiers"` | :x: W0 | :white_large_square: pending |
+| 01-01-03 | 01 | 1 | MENU-03 | unit | `npx vitest run src/components/__tests__/modifier-sheet.test.tsx -t "notes"` | :x: W0 | :white_large_square: pending |
+| 01-01-04 | 01 | 1 | MENU-04 | unit | `npx vitest run src/lib/__tests__/erp-sync.test.ts` | :x: W0 | :white_large_square: pending |
+| 01-01-05 | 01 | 1 | MENU-05 | unit | `npx vitest run src/db/__tests__/menu-queries.test.ts -t "brand scope"` | :x: W0 | :white_large_square: pending |
+| 01-02-01 | 02 | 1 | MBML-01 | unit | `npx vitest run src/db/__tests__/brand-queries.test.ts` | :x: W0 | :white_large_square: pending |
+| 01-02-02 | 02 | 1 | MBML-02 | unit | `npx vitest run src/db/__tests__/brand-queries.test.ts -t "branding"` | :x: W0 | :white_large_square: pending |
+| 01-02-03 | 02 | 1 | MBML-03 | integration | `npx vitest run src/app/api/__tests__/brands.test.ts` | :x: W0 | :white_large_square: pending |
+| 01-02-04 | 02 | 1 | MBML-04 | unit | `npx vitest run src/db/__tests__/location-queries.test.ts` | :x: W0 | :white_large_square: pending |
+| 01-02-05 | 02 | 1 | MBML-05 | unit | `npx vitest run src/lib/__tests__/permissions.test.ts` | :x: W0 | :white_large_square: pending |
+| 01-03-01 | 04 | 2 | UIUX-03 | smoke | `npx vitest run src/components/__tests__/smoke.test.tsx` | :x: W0 | :white_large_square: pending |
 
-*Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
+*Status: :white_large_square: pending · :white_check_mark: green · :x: red · :warning: flaky*
 
 ---
 
@@ -81,11 +81,11 @@ created: 2026-03-09
 
 ## Validation Sign-Off
 
-- [ ] All tasks have `<automated>` verify or Wave 0 dependencies
-- [ ] Sampling continuity: no 3 consecutive tasks without automated verify
-- [ ] Wave 0 covers all MISSING references
-- [ ] No watch-mode flags
-- [ ] Feedback latency < 10s
-- [ ] `nyquist_compliant: true` set in frontmatter
+- [x] All tasks have `<automated>` verify or Wave 0 dependencies
+- [x] Sampling continuity: no 3 consecutive tasks without automated verify
+- [x] Wave 0 covers all MISSING references
+- [x] No watch-mode flags
+- [x] Feedback latency < 10s
+- [x] `nyquist_compliant: true` set in frontmatter
 
-**Approval:** pending
+**Approval:** approved
