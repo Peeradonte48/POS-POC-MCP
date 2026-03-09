@@ -64,10 +64,10 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Multi-Brand & Multi-Location
 
-- [ ] **MBML-01**: System supports multiple restaurant brands with separate configurations
-- [ ] **MBML-02**: Each brand has its own branding (logo, name, address, tax ID) on receipts
+- [x] **MBML-01**: System supports multiple restaurant brands with separate configurations
+- [x] **MBML-02**: Each brand has its own branding (logo, name, address, tax ID) on receipts
 - [ ] **MBML-03**: Central admin can manage all locations from single platform
-- [ ] **MBML-04**: Location-level settings for printers, tables, tax, and service charge
+- [x] **MBML-04**: Location-level settings for printers, tables, tax, and service charge
 - [ ] **MBML-05**: Role-based access control (cashier, manager, admin) with appropriate permissions
 
 ### Reporting
@@ -147,10 +147,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | MENU-03 | Phase 1 | Pending |
 | MENU-04 | Phase 1 | Pending |
 | MENU-05 | Phase 1 | Pending |
-| MBML-01 | Phase 1 | Pending |
-| MBML-02 | Phase 1 | Pending |
+| MBML-01 | Phase 1 | Complete (01-01) |
+| MBML-02 | Phase 1 | Complete (01-01) |
 | MBML-03 | Phase 1 | Pending |
-| MBML-04 | Phase 1 | Pending |
+| MBML-04 | Phase 1 | Complete (01-01) |
 | MBML-05 | Phase 1 | Pending |
 | UIUX-03 | Phase 1 | Pending |
 | ORDR-01 | Phase 2 | Pending |

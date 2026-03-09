@@ -34,7 +34,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans:** 4 plans
 
 Plans:
-- [ ] 01-01-PLAN.md -- Project scaffolding and database schema with seed data
+- [x] 01-01-PLAN.md -- Project scaffolding and database schema with seed data
 - [ ] 01-02-PLAN.md -- Auth system (PIN + password), RBAC permissions, route protection
 - [ ] 01-03-PLAN.md -- Admin panel with brand/location/staff management and ERP sync
 - [ ] 01-04-PLAN.md -- POS floor interface with PIN login, menu browsing, and modifier selection
@@ -131,7 +131,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation & Multi-Brand Setup | 0/4 | Planning complete | - |
+| 1. Foundation & Multi-Brand Setup | 1/4 | In progress | - |
 | 2. Order Flow & Table Management | 0/3 | Not started | - |
 | 3. Kitchen Communication | 0/3 | Not started | - |
 | 4. Billing & Payments | 0/4 | Not started | - |
