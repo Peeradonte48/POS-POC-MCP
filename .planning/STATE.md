@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: completed
-stopped_at: Completed 02-03 (Live table grid and Order History)
-last_updated: "2026-03-09T18:52:05.905Z"
+stopped_at: Completed 02-04 (Order Flow UI Integration)
+last_updated: "2026-03-09T18:59:25.228Z"
 last_activity: 2026-03-10 -- Completed 01-04 (POS Floor Interface)
 progress:
   total_phases: 6
   completed_phases: 1
   total_plans: 9
-  completed_plans: 7
+  completed_plans: 8
   percent: 100
 ---
 
@@ -49,6 +49,7 @@ Progress: [██████████] 100% (Phase 1)
 | Phase 02-order-flow-table-management P01 | 5 | 3 tasks | 5 files |
 | Phase 02-order-flow-table-management P02 | 4 | 2 tasks | 5 files |
 | Phase 02-order-flow-table-management P03 | 5 | 3 tasks | 5 files |
+| Phase 02-order-flow-table-management P04 | 18 | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -80,6 +81,9 @@ Recent decisions affecting current work:
 - [Phase 02-03]: cashier and manager granted orders:read — required for table status display and order history access
 - [Phase 02-03]: Table order total computed via 3-query inArray batch pattern to avoid N+1 queries
 - [Phase 02-03]: OrderHistorySheet uses enabled:open in React Query for lazy-load on sheet open
+- [Phase 02-04]: PendingItem uses flat structure separate from OrderItem — maps directly to API payload without transformation
+- [Phase 02-04]: resolvedOrderId state in menu page tracks orderId after first send without URL navigation
+- [Phase 02-04]: POST /api/orders returns orderId (not id) — hook normalizes via data.id ?? data.orderId
 
 ### Pending Todos
 
@@ -94,6 +98,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-09T18:52:05.903Z
-Stopped at: Completed 02-03 (Live table grid and Order History)
+Last session: 2026-03-09T18:59:16.684Z
+Stopped at: Completed 02-04 (Order Flow UI Integration)
 Resume file: None
