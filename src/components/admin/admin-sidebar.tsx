@@ -80,7 +80,7 @@ export function AdminSidebar({ userName, userRole }: AdminSidebarProps) {
       <Button
         variant="ghost"
         size="icon"
-        className="fixed top-4 left-4 z-50 md:hidden"
+        className="fixed top-4 left-4 z-50 md:hidden cursor-pointer"
         onClick={() => setIsOpen(!isOpen)}
       >
         {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -89,7 +89,7 @@ export function AdminSidebar({ userName, userRole }: AdminSidebarProps) {
       {/* Overlay for mobile */}
       {isOpen && (
         <div
-          className="fixed inset-0 z-30 bg-black/50 md:hidden"
+          className="fixed inset-0 z-30 bg-black/40 backdrop-blur-sm md:hidden"
           onClick={() => setIsOpen(false)}
         />
       )}
@@ -97,17 +97,20 @@ export function AdminSidebar({ userName, userRole }: AdminSidebarProps) {
       {/* Sidebar */}
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-40 flex w-64 flex-col border-r bg-white transition-transform md:translate-x-0",
+          "fixed inset-y-0 left-0 z-40 flex w-64 flex-col border-r bg-card transition-transform duration-200 md:translate-x-0",
           isOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
         {/* Logo */}
         <div className="flex h-16 items-center border-b px-6">
-          <h1 className="text-lg font-bold">Admin Panel</h1>
+          <h1 className="text-lg font-bold text-foreground">A RAMEN</h1>
+          <span className="ml-2 text-xs font-medium text-muted-foreground rounded-md bg-muted px-2 py-0.5">
+            Admin
+          </span>
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 space-y-1 p-4">
+        <nav className="flex-1 space-y-1 p-3">
           {filteredItems.map((item) => {
             const isActive =
               item.href === "/admin"
@@ -120,10 +123,10 @@ export function AdminSidebar({ userName, userRole }: AdminSidebarProps) {
                 href={item.href}
                 onClick={() => setIsOpen(false)}
                 className={cn(
-                  "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+                  "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all",
                   isActive
-                    ? "bg-gray-100 text-gray-900"
-                    : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                    ? "bg-primary/10 text-primary"
+                    : "text-muted-foreground hover:bg-accent hover:text-foreground"
                 )}
               >
                 {item.icon}
@@ -134,14 +137,16 @@ export function AdminSidebar({ userName, userRole }: AdminSidebarProps) {
         </nav>
 
         {/* User info & logout */}
-        <div className="border-t p-4">
-          <div className="mb-3 px-3">
-            <p className="text-sm font-medium text-gray-900">{userName}</p>
-            <p className="text-xs capitalize text-gray-500">{userRole}</p>
+        <div className="border-t p-3">
+          <div className="mb-2 rounded-xl bg-muted/50 px-3 py-2.5">
+            <p className="text-sm font-medium text-foreground">{userName}</p>
+            <p className="text-xs capitalize text-muted-foreground">
+              {userRole}
+            </p>
           </div>
           <Button
             variant="ghost"
-            className="w-full justify-start gap-3 text-gray-600"
+            className="w-full justify-start gap-3 text-muted-foreground hover:text-foreground cursor-pointer"
             onClick={handleLogout}
           >
             <LogOut className="h-5 w-5" />

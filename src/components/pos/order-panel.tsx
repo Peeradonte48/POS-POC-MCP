@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
 import {
   Dialog,
   DialogContent,
@@ -13,32 +12,37 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Minus, Plus, Trash2 } from "lucide-react";
+import { Minus, Plus, Trash2, ShoppingBag, ChefHat } from "lucide-react";
 import type { OrderItemPayload } from "./modifier-sheet";
 
 const formatPrice = (amount: number) =>
   new Intl.NumberFormat("th-TH", {
     style: "currency",
     currency: "THB",
+    minimumFractionDigits: 0,
   }).format(amount);
 
 export interface OrderItem extends OrderItemPayload {
-  id: string; // unique identifier for this line item
+  id: string;
 }
 
 interface OrderPanelProps {
   items: OrderItem[];
+  tableLabel?: string | null;
   onUpdateQuantity: (id: string, quantity: number) => void;
   onRemoveItem: (id: string) => void;
   onClearOrder: () => void;
+  onChangeTable?: () => void;
   onSwitchUser: () => void;
 }
 
 export function OrderPanel({
   items,
+  tableLabel,
   onUpdateQuantity,
   onRemoveItem,
   onClearOrder,
+  onChangeTable,
   onSwitchUser,
 }: OrderPanelProps) {
   const [clearDialogOpen, setClearDialogOpen] = useState(false);
@@ -49,32 +53,57 @@ export function OrderPanel({
       (mSum, m) => mSum + Number(m.option.priceAdjustment),
       0
     );
-    return sum + (Number(orderItem.item.price) + modifierTotal) * orderItem.quantity;
+    return (
+      sum + (Number(orderItem.item.price) + modifierTotal) * orderItem.quantity
+    );
   }, 0);
 
   return (
     <div className="flex h-full flex-col">
       {/* Header */}
-      <div className="flex items-center justify-between border-b px-4 py-3">
-        <div>
-          <h2 className="font-semibold">Current Order</h2>
-          <p className="text-xs text-muted-foreground">
-            {itemCount} {itemCount === 1 ? "item" : "items"}
-          </p>
+      <div className="border-b px-4 py-3.5 space-y-2">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
+              <ShoppingBag className="h-4 w-4 text-primary" />
+            </div>
+            <div>
+              <h2 className="font-semibold text-sm">
+                {tableLabel ?? "Order"}
+              </h2>
+              <p className="text-xs text-muted-foreground">
+                {itemCount} {itemCount === 1 ? "item" : "items"}
+              </p>
+            </div>
+          </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-xs cursor-pointer"
+            onClick={onSwitchUser}
+          >
+            Switch User
+          </Button>
         </div>
-        <Button variant="ghost" size="sm" onClick={onSwitchUser}>
-          Switch User
-        </Button>
+        {onChangeTable && (
+          <button
+            onClick={onChangeTable}
+            className="text-xs text-primary/70 hover:text-primary transition-colors cursor-pointer"
+          >
+            Change table
+          </button>
+        )}
       </div>
 
       {/* Order items */}
       <ScrollArea className="flex-1">
         {items.length === 0 ? (
-          <div className="flex h-full min-h-[200px] items-center justify-center text-muted-foreground">
-            <p>No items added</p>
+          <div className="flex h-full min-h-[200px] flex-col items-center justify-center gap-2 text-muted-foreground">
+            <ShoppingBag className="h-10 w-10 opacity-20" />
+            <p className="text-sm">No items added</p>
           </div>
         ) : (
-          <div className="space-y-1 p-2">
+          <div className="space-y-2 p-3">
             {items.map((orderItem) => {
               const modifierTotal = orderItem.selectedModifiers.reduce(
                 (sum, m) => sum + Number(m.option.priceAdjustment),
@@ -87,22 +116,22 @@ export function OrderPanel({
               return (
                 <div
                   key={orderItem.id}
-                  className="rounded-lg border p-3 space-y-2"
+                  className="rounded-xl bg-muted/40 p-3 space-y-2"
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex-1 min-w-0">
-                      <p className="font-medium text-sm truncate">
+                      <p className="font-medium text-sm text-foreground line-clamp-1">
                         {orderItem.item.name}
                       </p>
                     </div>
-                    <p className="text-sm font-medium ml-2">
+                    <p className="text-sm font-semibold ml-2 text-foreground">
                       {formatPrice(lineTotal)}
                     </p>
                   </div>
 
                   {/* Modifiers */}
                   {orderItem.selectedModifiers.length > 0 && (
-                    <div className="pl-2 space-y-0.5">
+                    <div className="pl-1 space-y-0.5">
                       {orderItem.selectedModifiers.map((mod) => (
                         <p
                           key={mod.option.id}
@@ -118,18 +147,18 @@ export function OrderPanel({
 
                   {/* Notes */}
                   {orderItem.notes && (
-                    <p className="text-xs italic text-muted-foreground pl-2">
+                    <p className="text-xs italic text-muted-foreground pl-1">
                       {orderItem.notes}
                     </p>
                   )}
 
                   {/* Quantity controls */}
                   <div className="flex items-center justify-between pt-1">
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1.5">
                       <Button
                         variant="outline"
                         size="icon"
-                        className="h-7 w-7"
+                        className="h-8 w-8 rounded-lg cursor-pointer"
                         onClick={() =>
                           onUpdateQuantity(
                             orderItem.id,
@@ -139,13 +168,13 @@ export function OrderPanel({
                       >
                         <Minus className="h-3 w-3" />
                       </Button>
-                      <span className="w-6 text-center text-sm">
+                      <span className="w-7 text-center text-sm font-medium">
                         {orderItem.quantity}
                       </span>
                       <Button
                         variant="outline"
                         size="icon"
-                        className="h-7 w-7"
+                        className="h-8 w-8 rounded-lg cursor-pointer"
                         onClick={() =>
                           onUpdateQuantity(
                             orderItem.id,
@@ -159,7 +188,7 @@ export function OrderPanel({
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-7 w-7 text-destructive hover:text-destructive"
+                      className="h-8 w-8 text-destructive hover:text-destructive cursor-pointer"
                       onClick={() => onRemoveItem(orderItem.id)}
                     >
                       <Trash2 className="h-3.5 w-3.5" />
@@ -174,13 +203,18 @@ export function OrderPanel({
 
       {/* Footer */}
       <div className="border-t p-4 space-y-3">
-        <Separator />
         <div className="flex items-center justify-between">
-          <span className="font-semibold">Subtotal</span>
-          <span className="text-lg font-bold">{formatPrice(subtotal)}</span>
+          <span className="text-sm text-muted-foreground">Subtotal</span>
+          <span className="text-xl font-bold text-foreground">
+            {formatPrice(subtotal)}
+          </span>
         </div>
 
-        <Button className="w-full h-11" disabled>
+        <Button
+          className="w-full h-12 text-base font-semibold gap-2 rounded-xl cursor-pointer"
+          disabled
+        >
+          <ChefHat className="h-5 w-5" />
           Send to Kitchen
         </Button>
 
@@ -188,8 +222,8 @@ export function OrderPanel({
           <DialogTrigger
             render={
               <Button
-                variant="outline"
-                className="w-full"
+                variant="ghost"
+                className="w-full text-muted-foreground cursor-pointer"
                 disabled={items.length === 0}
               />
             }
@@ -207,12 +241,14 @@ export function OrderPanel({
             <DialogFooter>
               <Button
                 variant="outline"
+                className="cursor-pointer"
                 onClick={() => setClearDialogOpen(false)}
               >
                 Cancel
               </Button>
               <Button
                 variant="destructive"
+                className="cursor-pointer"
                 onClick={() => {
                   onClearOrder();
                   setClearDialogOpen(false);

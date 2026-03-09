@@ -34,7 +34,7 @@ export async function proxy(request: NextRequest) {
 
     // Cashiers cannot access admin routes
     if (isAdminRoute(pathname) && session.role === "cashier") {
-      return NextResponse.redirect(new URL("/menu", request.url));
+      return NextResponse.redirect(new URL("/tables", request.url));
     }
 
     return NextResponse.next();

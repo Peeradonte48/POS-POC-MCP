@@ -17,6 +17,17 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "A RAMEN POS",
   description: "Multi-brand POS system",
+  viewport: {
+    width: "device-width",
+    initialScale: 1,
+    maximumScale: 1,
+    userScalable: false,
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "A RAMEN POS",
+  },
 };
 
 export default function RootLayout({
@@ -25,10 +36,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+    <html
+      lang="en"
+      className={`${geistSans.variable} ${geistMono.variable}`}
+    >
+      <body className="antialiased">
         <QueryProvider>
           {children}
           <Toaster />

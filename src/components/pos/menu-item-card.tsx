@@ -1,6 +1,5 @@
 "use client";
 
-import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import type { MenuItem } from "@/hooks/use-menu";
@@ -14,32 +13,37 @@ const formatPrice = (price: string) =>
   new Intl.NumberFormat("th-TH", {
     style: "currency",
     currency: "THB",
+    minimumFractionDigits: 0,
   }).format(Number(price));
 
 export function MenuItemCard({ item, onSelect }: MenuItemCardProps) {
   const isOutOfStock = !item.isActive;
 
   return (
-    <Card
+    <button
+      type="button"
       className={cn(
-        "cursor-pointer transition-shadow hover:shadow-md active:shadow-sm select-none p-0 gap-0",
-        isOutOfStock && "opacity-50 cursor-not-allowed"
+        "group relative flex flex-col overflow-hidden rounded-2xl border bg-card text-left transition-all cursor-pointer",
+        "hover:shadow-lg hover:border-primary/20 active:scale-[0.97]",
+        isOutOfStock && "opacity-50 cursor-not-allowed pointer-events-none"
       )}
       onClick={() => {
         if (!isOutOfStock) onSelect(item);
       }}
     >
       {/* Image */}
-      <div className="relative aspect-square w-full overflow-hidden rounded-t-xl bg-muted">
+      <div className="relative aspect-square w-full overflow-hidden bg-muted">
         {item.imageUrl ? (
           <img
             src={item.imageUrl}
             alt={item.name}
-            className="h-full w-full object-cover"
+            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
           />
         ) : (
-          <div className="flex h-full w-full items-center justify-center text-muted-foreground text-2xl">
-            {item.name.charAt(0)}
+          <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-muted to-accent">
+            <span className="text-3xl font-bold text-muted-foreground/40">
+              {item.name.charAt(0)}
+            </span>
           </div>
         )}
         {isOutOfStock && (
@@ -53,15 +57,15 @@ export function MenuItemCard({ item, onSelect }: MenuItemCardProps) {
       </div>
 
       {/* Info */}
-      <div className="p-3">
-        <p className="font-medium text-sm leading-tight truncate">
+      <div className="p-3 flex-1 flex flex-col justify-between">
+        <p className="font-medium text-sm leading-tight line-clamp-2 text-card-foreground">
           {item.name}
         </p>
-        <p className="text-sm text-muted-foreground mt-1">
+        <p className="text-sm font-semibold text-primary mt-1.5">
           {formatPrice(item.price)}
         </p>
       </div>
-    </Card>
+    </button>
   );
 }
 

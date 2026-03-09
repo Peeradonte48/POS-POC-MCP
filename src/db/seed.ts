@@ -7,6 +7,44 @@ import { users } from "./schema/users";
 import { terminals } from "./schema/terminals";
 import { menuCategories, menuItems, modifierGroups, modifierOptions } from "./schema/menu";
 
+// Unsplash direct image URLs (free, no API key needed, 400x400 crop)
+const img = (id: string) => `https://images.unsplash.com/photo-${id}?w=400&h=400&fit=crop&q=80`;
+
+const images = {
+  // A RAMEN
+  tonkotsu:      img("1569718212165-3a8922ada9a4"),
+  shoyu:         img("1591814468924-caf88d1232e1"),
+  miso:          img("1617093727343-374698b1b08d"),
+  tantan:        img("1623341214825-9f4f963727da"),
+  vegRamen:      img("1547928578-bca3e90e8e56"),
+  gyoza:         img("1496116218417-1a781b1c416c"),
+  edamame:       img("1564834724105-918b73033155"),
+  karaage:       img("1562967916-eb82221dfb2a"),
+  chashuDon:     img("1526318896980-cf78c088247c"),
+  katsuDon:      img("1585032226651-759b368d7246"),
+  extraChashu:   img("1555939594-58d7cb561ad1"),
+  extraEgg:      img("1482049016530-d981e5db9e12"),
+  extraNoodles:  img("1612929633738-8fe44f7ec841"),
+  icedGreenTea:  img("1556881286-fc6a1e5e0820"),
+  ramune:        img("1625772299848-391b6a87d7b3"),
+  // Burger Lab
+  classicBurger: img("1568901346375-23c9450c58cd"),
+  doubleBurger:  img("1553979459-d2229ba7433b"),
+  baconBurger:   img("1594212699903-ec8a3eca50f5"),
+  mushroomBurger:img("1572802419224-296b0aeee15d"),
+  veggieBurger:  img("1520072959219-c595e76c6b92"),
+  fries:         img("1573080496219-bb080dd4f877"),
+  onionRings:    img("1639024471283-03518883512d"),
+  coleslaw:      img("1625938144755-652e08e359b7"),
+  vanillaShake:  img("1572490122747-3968b75cc699"),
+  chocoShake:    img("1541658016709-82535e94bc69"),
+  strawShake:    img("1579954354917-f9fba61a1cee"),
+  cola:          img("1554866585-cd94860890b7"),
+  sprite:        img("1625772452859-163c51cd81ae"),
+  brownie:       img("1606313564200-e75d5e30476c"),
+  churros:       img("1624353365286-3f8d62daad51"),
+};
+
 async function seed() {
   const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
@@ -78,7 +116,6 @@ async function seed() {
   console.log(`Created locations: ${aramenLocation.name}, ${burgerLabLocation.name}`);
 
   // --- Users ---
-  // Admin (cross-brand)
   await db.insert(users).values({
     brandId: aramen.id,
     name: "System Admin",
@@ -87,7 +124,6 @@ async function seed() {
     passwordHash: adminPasswordHash,
   });
 
-  // A RAMEN staff
   await db.insert(users).values([
     {
       brandId: aramen.id,
@@ -114,7 +150,6 @@ async function seed() {
     },
   ]);
 
-  // Burger Lab staff
   await db.insert(users).values([
     {
       brandId: burgerLab.id,
@@ -181,38 +216,38 @@ async function seed() {
   const aramenRamenItems = await db
     .insert(menuItems)
     .values([
-      { brandId: aramen.id, categoryId: ramenCat.id, name: "Tonkotsu Ramen", price: "189.00", erpId: "AR-001" },
-      { brandId: aramen.id, categoryId: ramenCat.id, name: "Shoyu Ramen", price: "179.00", erpId: "AR-002" },
-      { brandId: aramen.id, categoryId: ramenCat.id, name: "Miso Ramen", price: "189.00", erpId: "AR-003" },
-      { brandId: aramen.id, categoryId: ramenCat.id, name: "Spicy Tan-Tan Ramen", price: "199.00", erpId: "AR-004" },
-      { brandId: aramen.id, categoryId: ramenCat.id, name: "Veggie Ramen", price: "169.00", erpId: "AR-005" },
+      { brandId: aramen.id, categoryId: ramenCat.id, name: "Tonkotsu Ramen", price: "189.00", imageUrl: images.tonkotsu, erpId: "AR-001" },
+      { brandId: aramen.id, categoryId: ramenCat.id, name: "Shoyu Ramen", price: "179.00", imageUrl: images.shoyu, erpId: "AR-002" },
+      { brandId: aramen.id, categoryId: ramenCat.id, name: "Miso Ramen", price: "189.00", imageUrl: images.miso, erpId: "AR-003" },
+      { brandId: aramen.id, categoryId: ramenCat.id, name: "Spicy Tan-Tan Ramen", price: "199.00", imageUrl: images.tantan, erpId: "AR-004" },
+      { brandId: aramen.id, categoryId: ramenCat.id, name: "Veggie Ramen", price: "169.00", imageUrl: images.vegRamen, erpId: "AR-005" },
     ])
     .returning();
 
   // Appetizer items
   await db.insert(menuItems).values([
-    { brandId: aramen.id, categoryId: appetizerCat.id, name: "Gyoza (6 pcs)", price: "129.00", erpId: "AR-006" },
-    { brandId: aramen.id, categoryId: appetizerCat.id, name: "Edamame", price: "79.00", erpId: "AR-007" },
-    { brandId: aramen.id, categoryId: appetizerCat.id, name: "Karaage Chicken", price: "139.00", erpId: "AR-008" },
+    { brandId: aramen.id, categoryId: appetizerCat.id, name: "Gyoza (6 pcs)", price: "129.00", imageUrl: images.gyoza, erpId: "AR-006" },
+    { brandId: aramen.id, categoryId: appetizerCat.id, name: "Edamame", price: "79.00", imageUrl: images.edamame, erpId: "AR-007" },
+    { brandId: aramen.id, categoryId: appetizerCat.id, name: "Karaage Chicken", price: "139.00", imageUrl: images.karaage, erpId: "AR-008" },
   ]);
 
   // Rice bowl items
   await db.insert(menuItems).values([
-    { brandId: aramen.id, categoryId: riceCat.id, name: "Chashu Don", price: "159.00", erpId: "AR-009" },
-    { brandId: aramen.id, categoryId: riceCat.id, name: "Katsu Don", price: "169.00", erpId: "AR-010" },
+    { brandId: aramen.id, categoryId: riceCat.id, name: "Chashu Don", price: "159.00", imageUrl: images.chashuDon, erpId: "AR-009" },
+    { brandId: aramen.id, categoryId: riceCat.id, name: "Katsu Don", price: "169.00", imageUrl: images.katsuDon, erpId: "AR-010" },
   ]);
 
   // Side items
   await db.insert(menuItems).values([
-    { brandId: aramen.id, categoryId: sidesCat.id, name: "Extra Chashu", price: "59.00", erpId: "AR-011" },
-    { brandId: aramen.id, categoryId: sidesCat.id, name: "Extra Egg", price: "29.00", erpId: "AR-012" },
-    { brandId: aramen.id, categoryId: sidesCat.id, name: "Extra Noodles", price: "39.00", erpId: "AR-013" },
+    { brandId: aramen.id, categoryId: sidesCat.id, name: "Extra Chashu", price: "59.00", imageUrl: images.extraChashu, erpId: "AR-011" },
+    { brandId: aramen.id, categoryId: sidesCat.id, name: "Extra Egg", price: "29.00", imageUrl: images.extraEgg, erpId: "AR-012" },
+    { brandId: aramen.id, categoryId: sidesCat.id, name: "Extra Noodles", price: "39.00", imageUrl: images.extraNoodles, erpId: "AR-013" },
   ]);
 
   // Drink items
   await db.insert(menuItems).values([
-    { brandId: aramen.id, categoryId: drinksCat.id, name: "Iced Green Tea", price: "69.00", erpId: "AR-014" },
-    { brandId: aramen.id, categoryId: drinksCat.id, name: "Ramune Soda", price: "79.00", erpId: "AR-015" },
+    { brandId: aramen.id, categoryId: drinksCat.id, name: "Iced Green Tea", price: "69.00", imageUrl: images.icedGreenTea, erpId: "AR-014" },
+    { brandId: aramen.id, categoryId: drinksCat.id, name: "Ramune Soda", price: "79.00", imageUrl: images.ramune, erpId: "AR-015" },
   ]);
 
   // Modifiers for Tonkotsu Ramen
@@ -279,38 +314,38 @@ async function seed() {
   const burgerItems = await db
     .insert(menuItems)
     .values([
-      { brandId: burgerLab.id, categoryId: burgerCat.id, name: "Classic Smash Burger", price: "189.00", erpId: "BL-001" },
-      { brandId: burgerLab.id, categoryId: burgerCat.id, name: "Double Smash Burger", price: "249.00", erpId: "BL-002" },
-      { brandId: burgerLab.id, categoryId: burgerCat.id, name: "Bacon Cheeseburger", price: "229.00", erpId: "BL-003" },
-      { brandId: burgerLab.id, categoryId: burgerCat.id, name: "Mushroom Swiss Burger", price: "239.00", erpId: "BL-004" },
-      { brandId: burgerLab.id, categoryId: burgerCat.id, name: "Veggie Burger", price: "179.00", erpId: "BL-005" },
+      { brandId: burgerLab.id, categoryId: burgerCat.id, name: "Classic Smash Burger", price: "189.00", imageUrl: images.classicBurger, erpId: "BL-001" },
+      { brandId: burgerLab.id, categoryId: burgerCat.id, name: "Double Smash Burger", price: "249.00", imageUrl: images.doubleBurger, erpId: "BL-002" },
+      { brandId: burgerLab.id, categoryId: burgerCat.id, name: "Bacon Cheeseburger", price: "229.00", imageUrl: images.baconBurger, erpId: "BL-003" },
+      { brandId: burgerLab.id, categoryId: burgerCat.id, name: "Mushroom Swiss Burger", price: "239.00", imageUrl: images.mushroomBurger, erpId: "BL-004" },
+      { brandId: burgerLab.id, categoryId: burgerCat.id, name: "Veggie Burger", price: "179.00", imageUrl: images.veggieBurger, erpId: "BL-005" },
     ])
     .returning();
 
   // Sides
   await db.insert(menuItems).values([
-    { brandId: burgerLab.id, categoryId: blSidesCat.id, name: "French Fries", price: "79.00", erpId: "BL-006" },
-    { brandId: burgerLab.id, categoryId: blSidesCat.id, name: "Onion Rings", price: "99.00", erpId: "BL-007" },
-    { brandId: burgerLab.id, categoryId: blSidesCat.id, name: "Coleslaw", price: "59.00", erpId: "BL-008" },
+    { brandId: burgerLab.id, categoryId: blSidesCat.id, name: "French Fries", price: "79.00", imageUrl: images.fries, erpId: "BL-006" },
+    { brandId: burgerLab.id, categoryId: blSidesCat.id, name: "Onion Rings", price: "99.00", imageUrl: images.onionRings, erpId: "BL-007" },
+    { brandId: burgerLab.id, categoryId: blSidesCat.id, name: "Coleslaw", price: "59.00", imageUrl: images.coleslaw, erpId: "BL-008" },
   ]);
 
   // Shakes
   await db.insert(menuItems).values([
-    { brandId: burgerLab.id, categoryId: shakesCat.id, name: "Vanilla Shake", price: "119.00", erpId: "BL-009" },
-    { brandId: burgerLab.id, categoryId: shakesCat.id, name: "Chocolate Shake", price: "119.00", erpId: "BL-010" },
-    { brandId: burgerLab.id, categoryId: shakesCat.id, name: "Strawberry Shake", price: "129.00", erpId: "BL-011" },
+    { brandId: burgerLab.id, categoryId: shakesCat.id, name: "Vanilla Shake", price: "119.00", imageUrl: images.vanillaShake, erpId: "BL-009" },
+    { brandId: burgerLab.id, categoryId: shakesCat.id, name: "Chocolate Shake", price: "119.00", imageUrl: images.chocoShake, erpId: "BL-010" },
+    { brandId: burgerLab.id, categoryId: shakesCat.id, name: "Strawberry Shake", price: "129.00", imageUrl: images.strawShake, erpId: "BL-011" },
   ]);
 
   // Drinks
   await db.insert(menuItems).values([
-    { brandId: burgerLab.id, categoryId: blDrinksCat.id, name: "Coca-Cola", price: "49.00", erpId: "BL-012" },
-    { brandId: burgerLab.id, categoryId: blDrinksCat.id, name: "Sprite", price: "49.00", erpId: "BL-013" },
+    { brandId: burgerLab.id, categoryId: blDrinksCat.id, name: "Coca-Cola", price: "49.00", imageUrl: images.cola, erpId: "BL-012" },
+    { brandId: burgerLab.id, categoryId: blDrinksCat.id, name: "Sprite", price: "49.00", imageUrl: images.sprite, erpId: "BL-013" },
   ]);
 
   // Desserts
   await db.insert(menuItems).values([
-    { brandId: burgerLab.id, categoryId: dessertsCat.id, name: "Brownie Sundae", price: "139.00", erpId: "BL-014" },
-    { brandId: burgerLab.id, categoryId: dessertsCat.id, name: "Churros", price: "99.00", erpId: "BL-015" },
+    { brandId: burgerLab.id, categoryId: dessertsCat.id, name: "Brownie Sundae", price: "139.00", imageUrl: images.brownie, erpId: "BL-014" },
+    { brandId: burgerLab.id, categoryId: dessertsCat.id, name: "Churros", price: "99.00", imageUrl: images.churros, erpId: "BL-015" },
   ]);
 
   // Modifiers for Classic Smash Burger
@@ -357,6 +392,7 @@ async function seed() {
 
   console.log("Created menu: A RAMEN (5 categories, 15 items), Burger Lab (5 categories, 15 items)");
   console.log("Created modifiers: noodle firmness, toppings, cheese, add-ons");
+  console.log("All items have placeholder images from Unsplash");
   console.log("Seed complete!");
 
   await pool.end();

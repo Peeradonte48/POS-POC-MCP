@@ -15,43 +15,47 @@ export function PinPad({ onSubmit, maxLength = 6, isLoading }: PinPadProps) {
 
   const handleDigit = (digit: string) => {
     if (pin.length < maxLength) {
-      setPin((prev) => prev + digit);
+      const next = pin + digit;
+      setPin(next);
+      if (next.length === 4) {
+        onSubmit(next);
+      }
     }
   };
 
   const handleBackspace = () => setPin((prev) => prev.slice(0, -1));
   const handleClear = () => setPin("");
-  const handleSubmit = () => {
-    if (pin.length >= 4) {
-      onSubmit(pin);
-    }
-  };
 
   const digits = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
 
+  const btnClass =
+    "h-16 w-16 sm:h-[72px] sm:w-[72px] md:h-20 md:w-20 rounded-2xl text-xl sm:text-2xl md:text-3xl font-semibold shadow-sm hover:shadow-md transition-all active:scale-95";
+  const ghostBtnClass =
+    "h-16 w-16 sm:h-[72px] sm:w-[72px] md:h-20 md:w-20 rounded-2xl text-muted-foreground";
+
   return (
-    <div className="flex flex-col items-center gap-6">
+    <div className="flex flex-col items-center gap-6 sm:gap-8">
       {/* PIN display dots */}
-      <div className="flex gap-3">
-        {Array.from({ length: maxLength }).map((_, i) => (
+      <div className="flex gap-3 sm:gap-4">
+        {Array.from({ length: 4 }).map((_, i) => (
           <div
             key={i}
-            className={`h-4 w-4 rounded-full border-2 transition-colors ${
+            className={`h-3.5 w-3.5 sm:h-4 sm:w-4 rounded-full transition-all duration-200 ${
               i < pin.length
-                ? "bg-primary border-primary"
-                : "border-muted-foreground/40"
+                ? "bg-primary scale-110"
+                : "border-2 border-muted-foreground/30"
             }`}
           />
         ))}
       </div>
 
       {/* Number grid */}
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-3 gap-2.5 sm:gap-3">
         {digits.map((digit) => (
           <Button
             key={digit}
             variant="outline"
-            className="h-16 w-16 text-2xl font-medium"
+            className={btnClass}
             onClick={() => handleDigit(digit)}
             disabled={isLoading || pin.length >= maxLength}
           >
@@ -59,10 +63,9 @@ export function PinPad({ onSubmit, maxLength = 6, isLoading }: PinPadProps) {
           </Button>
         ))}
 
-        {/* Bottom row: Clear, 0, Backspace */}
         <Button
           variant="ghost"
-          className="h-16 w-16"
+          className={ghostBtnClass}
           onClick={handleClear}
           disabled={isLoading || pin.length === 0}
         >
@@ -71,7 +74,7 @@ export function PinPad({ onSubmit, maxLength = 6, isLoading }: PinPadProps) {
 
         <Button
           variant="outline"
-          className="h-16 w-16 text-2xl font-medium"
+          className={btnClass}
           onClick={() => handleDigit("0")}
           disabled={isLoading || pin.length >= maxLength}
         >
@@ -80,7 +83,7 @@ export function PinPad({ onSubmit, maxLength = 6, isLoading }: PinPadProps) {
 
         <Button
           variant="ghost"
-          className="h-16 w-16"
+          className={ghostBtnClass}
           onClick={handleBackspace}
           disabled={isLoading || pin.length === 0}
         >
@@ -88,14 +91,11 @@ export function PinPad({ onSubmit, maxLength = 6, isLoading }: PinPadProps) {
         </Button>
       </div>
 
-      {/* Enter button */}
-      <Button
-        className="w-full max-w-[224px] h-12 text-lg"
-        onClick={handleSubmit}
-        disabled={pin.length < 4 || isLoading}
-      >
-        {isLoading ? "Signing in..." : "Enter"}
-      </Button>
+      {isLoading && (
+        <p className="text-sm text-muted-foreground animate-pulse">
+          Signing in...
+        </p>
+      )}
     </div>
   );
 }
