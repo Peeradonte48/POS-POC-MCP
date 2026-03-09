@@ -13,7 +13,11 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Minus, Plus, Trash2, ShoppingBag, ChefHat } from "lucide-react";
-import type { OrderItemPayload } from "./modifier-sheet";
+import type { OrderWithItems, PendingItem } from "@/hooks/use-order";
+
+// ---------------------------------------------------------------------------
+// Formatters
+// ---------------------------------------------------------------------------
 
 const formatPrice = (amount: number) =>
   new Intl.NumberFormat("th-TH", {
@@ -22,41 +26,81 @@ const formatPrice = (amount: number) =>
     minimumFractionDigits: 0,
   }).format(amount);
 
-export interface OrderItem extends OrderItemPayload {
-  id: string;
-}
+// ---------------------------------------------------------------------------
+// Props
+// ---------------------------------------------------------------------------
 
 interface OrderPanelProps {
-  items: OrderItem[];
+  serverOrder: OrderWithItems | null;
+  pendingItems: PendingItem[];
   tableLabel?: string | null;
-  onUpdateQuantity: (id: string, quantity: number) => void;
-  onRemoveItem: (id: string) => void;
+  onUpdateQuantity: (tempId: string, quantity: number) => void;
+  onRemoveItem: (tempId: string) => void;
   onClearOrder: () => void;
   onChangeTable?: () => void;
   onSwitchUser: () => void;
+  onSend: () => void;
+  isSending?: boolean;
+  onVoidItem?: (itemId: string) => void; // reserved for Plan 02-05
 }
 
+// ---------------------------------------------------------------------------
+// OrderPanel
+// ---------------------------------------------------------------------------
+
 export function OrderPanel({
-  items,
+  serverOrder,
+  pendingItems,
   tableLabel,
   onUpdateQuantity,
   onRemoveItem,
   onClearOrder,
   onChangeTable,
   onSwitchUser,
+  onSend,
+  isSending = false,
 }: OrderPanelProps) {
   const [clearDialogOpen, setClearDialogOpen] = useState(false);
 
-  const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
-  const subtotal = items.reduce((sum, orderItem) => {
-    const modifierTotal = orderItem.selectedModifiers.reduce(
-      (mSum, m) => mSum + Number(m.option.priceAdjustment),
+  // Group sent items by round number
+  const sentItems = (serverOrder?.items ?? []).filter(
+    (item) => item.voidedAt === null
+  );
+  const voidedItems = (serverOrder?.items ?? []).filter(
+    (item) => item.voidedAt !== null
+  );
+
+  const roundNumbers = Array.from(
+    new Set(sentItems.map((item) => item.roundNumber))
+  ).sort((a, b) => a - b);
+
+  // Calculate subtotals
+  const sentSubtotal = sentItems.reduce((sum, item) => {
+    const modTotal = item.modifiers.reduce(
+      (mSum, m) => mSum + m.priceAdjustment,
       0
     );
-    return (
-      sum + (Number(orderItem.item.price) + modifierTotal) * orderItem.quantity
-    );
+    return sum + (item.unitPrice + modTotal) * item.quantity;
   }, 0);
+
+  const pendingSubtotal = pendingItems.reduce((sum, item) => {
+    const modTotal = item.selectedModifiers.reduce(
+      (mSum, m) => mSum + m.priceAdjustment,
+      0
+    );
+    return sum + (item.unitPrice + modTotal) * item.quantity;
+  }, 0);
+
+  const grandTotal = sentSubtotal + pendingSubtotal;
+
+  const pendingCount = pendingItems.reduce((sum, item) => sum + item.quantity, 0);
+  const hasSentItems = sentItems.length > 0 || voidedItems.length > 0;
+  const hasAnyItems = hasSentItems || pendingItems.length > 0;
+
+  const sendLabel =
+    pendingItems.length > 0
+      ? `Send ${pendingItems.length} item${pendingItems.length > 1 ? "s" : ""}`
+      : "Send to Kitchen";
 
   return (
     <div className="flex h-full flex-col">
@@ -69,10 +113,13 @@ export function OrderPanel({
             </div>
             <div>
               <h2 className="font-semibold text-sm">
-                {tableLabel ?? "Order"}
+                {serverOrder
+                  ? `#${serverOrder.orderNumber} — ${tableLabel ?? "Order"}`
+                  : (tableLabel ?? "Order")}
               </h2>
               <p className="text-xs text-muted-foreground">
-                {itemCount} {itemCount === 1 ? "item" : "items"}
+                {pendingCount} unsent{" "}
+                {hasSentItems && `· ${sentItems.length} sent`}
               </p>
             </div>
           </div>
@@ -97,106 +144,185 @@ export function OrderPanel({
 
       {/* Order items */}
       <ScrollArea className="flex-1">
-        {items.length === 0 ? (
+        {!hasAnyItems ? (
           <div className="flex h-full min-h-[200px] flex-col items-center justify-center gap-2 text-muted-foreground">
             <ShoppingBag className="h-10 w-10 opacity-20" />
             <p className="text-sm">No items added</p>
           </div>
         ) : (
-          <div className="space-y-2 p-3">
-            {items.map((orderItem) => {
-              const modifierTotal = orderItem.selectedModifiers.reduce(
-                (sum, m) => sum + Number(m.option.priceAdjustment),
-                0
+          <div className="space-y-1 p-3">
+            {/* Sent items grouped by round */}
+            {roundNumbers.map((round) => {
+              const roundItems = sentItems.filter(
+                (item) => item.roundNumber === round
               );
-              const lineTotal =
-                (Number(orderItem.item.price) + modifierTotal) *
-                orderItem.quantity;
-
               return (
-                <div
-                  key={orderItem.id}
-                  className="rounded-xl bg-muted/40 p-3 space-y-2"
-                >
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1 min-w-0">
-                      <p className="font-medium text-sm text-foreground line-clamp-1">
-                        {orderItem.item.name}
-                      </p>
-                    </div>
-                    <p className="text-sm font-semibold ml-2 text-foreground">
-                      {formatPrice(lineTotal)}
-                    </p>
-                  </div>
-
-                  {/* Modifiers */}
-                  {orderItem.selectedModifiers.length > 0 && (
-                    <div className="pl-1 space-y-0.5">
-                      {orderItem.selectedModifiers.map((mod) => (
-                        <p
-                          key={mod.option.id}
-                          className="text-xs text-muted-foreground"
-                        >
-                          + {mod.option.name}
-                          {Number(mod.option.priceAdjustment) !== 0 &&
-                            ` (${formatPrice(Number(mod.option.priceAdjustment))})`}
-                        </p>
-                      ))}
-                    </div>
-                  )}
-
-                  {/* Notes */}
-                  {orderItem.notes && (
-                    <p className="text-xs italic text-muted-foreground pl-1">
-                      {orderItem.notes}
-                    </p>
-                  )}
-
-                  {/* Quantity controls */}
-                  <div className="flex items-center justify-between pt-1">
-                    <div className="flex items-center gap-1.5">
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        className="h-8 w-8 rounded-lg cursor-pointer"
-                        onClick={() =>
-                          onUpdateQuantity(
-                            orderItem.id,
-                            orderItem.quantity - 1
-                          )
-                        }
+                <div key={round} className="space-y-1">
+                  {/* Round label */}
+                  <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/60 px-1 pt-1">
+                    Round {round}
+                  </p>
+                  {roundItems.map((item) => {
+                    const modTotal = item.modifiers.reduce(
+                      (sum, m) => sum + m.priceAdjustment,
+                      0
+                    );
+                    const lineTotal =
+                      (item.unitPrice + modTotal) * item.quantity;
+                    return (
+                      <div
+                        key={item.id}
+                        className="rounded-xl bg-muted/20 p-3 space-y-1 opacity-60"
                       >
-                        <Minus className="h-3 w-3" />
-                      </Button>
-                      <span className="w-7 text-center text-sm font-medium">
-                        {orderItem.quantity}
-                      </span>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        className="h-8 w-8 rounded-lg cursor-pointer"
-                        onClick={() =>
-                          onUpdateQuantity(
-                            orderItem.id,
-                            orderItem.quantity + 1
-                          )
-                        }
-                      >
-                        <Plus className="h-3 w-3" />
-                      </Button>
-                    </div>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8 text-destructive hover:text-destructive cursor-pointer"
-                      onClick={() => onRemoveItem(orderItem.id)}
-                    >
-                      <Trash2 className="h-3.5 w-3.5" />
-                    </Button>
-                  </div>
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm text-muted-foreground line-clamp-1">
+                              {item.quantity} × {item.menuItemName}
+                            </p>
+                            {item.modifiers.map((mod, i) => (
+                              <p
+                                key={i}
+                                className="text-xs text-muted-foreground/70 pl-1"
+                              >
+                                + {mod.optionName}
+                              </p>
+                            ))}
+                            {item.notes && (
+                              <p className="text-xs italic text-muted-foreground/70 pl-1">
+                                {item.notes}
+                              </p>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-1.5 ml-2">
+                            <p className="text-sm text-muted-foreground">
+                              {formatPrice(lineTotal)}
+                            </p>
+                            <span className="text-[10px] font-medium bg-muted text-muted-foreground rounded px-1.5 py-0.5">
+                              Sent
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
               );
             })}
+
+            {/* Voided items */}
+            {voidedItems.length > 0 && (
+              <div className="space-y-1">
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/40 px-1 pt-1">
+                  Voided
+                </p>
+                {voidedItems.map((item) => (
+                  <div
+                    key={item.id}
+                    className="rounded-xl bg-muted/10 p-3 opacity-40"
+                  >
+                    <div className="flex items-start justify-between">
+                      <p className="text-sm text-muted-foreground line-through line-clamp-1">
+                        {item.quantity} × {item.menuItemName}
+                      </p>
+                      {item.voidReason && (
+                        <p className="text-xs text-muted-foreground/60 ml-2">
+                          {item.voidReason}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Pending items — not yet sent */}
+            {pendingItems.length > 0 && (
+              <div className="space-y-1">
+                {hasSentItems && (
+                  <p className="text-[10px] font-semibold uppercase tracking-wider text-primary/70 px-1 pt-2">
+                    New items
+                  </p>
+                )}
+                {pendingItems.map((item) => {
+                  const modTotal = item.selectedModifiers.reduce(
+                    (sum, m) => sum + m.priceAdjustment,
+                    0
+                  );
+                  const lineTotal =
+                    (item.unitPrice + modTotal) * item.quantity;
+
+                  return (
+                    <div
+                      key={item.tempId}
+                      className="rounded-xl bg-muted/40 p-3 space-y-2"
+                    >
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium text-sm text-foreground line-clamp-1">
+                            {item.menuItemName}
+                          </p>
+                          {item.selectedModifiers.map((mod, i) => (
+                            <p
+                              key={i}
+                              className="text-xs text-muted-foreground pl-1"
+                            >
+                              + {mod.optionName}
+                              {mod.priceAdjustment !== 0 &&
+                                ` (${formatPrice(mod.priceAdjustment)})`}
+                            </p>
+                          ))}
+                          {item.notes && (
+                            <p className="text-xs italic text-muted-foreground pl-1">
+                              {item.notes}
+                            </p>
+                          )}
+                        </div>
+                        <p className="text-sm font-semibold ml-2 text-foreground">
+                          {formatPrice(lineTotal)}
+                        </p>
+                      </div>
+
+                      {/* Quantity controls */}
+                      <div className="flex items-center justify-between pt-1">
+                        <div className="flex items-center gap-1.5">
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            className="h-8 w-8 rounded-lg cursor-pointer"
+                            onClick={() =>
+                              onUpdateQuantity(item.tempId, item.quantity - 1)
+                            }
+                          >
+                            <Minus className="h-3 w-3" />
+                          </Button>
+                          <span className="w-7 text-center text-sm font-medium">
+                            {item.quantity}
+                          </span>
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            className="h-8 w-8 rounded-lg cursor-pointer"
+                            onClick={() =>
+                              onUpdateQuantity(item.tempId, item.quantity + 1)
+                            }
+                          >
+                            <Plus className="h-3 w-3" />
+                          </Button>
+                        </div>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 text-destructive hover:text-destructive cursor-pointer"
+                          onClick={() => onRemoveItem(item.tempId)}
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </Button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
         )}
       </ScrollArea>
@@ -204,18 +330,21 @@ export function OrderPanel({
       {/* Footer */}
       <div className="border-t p-4 space-y-3">
         <div className="flex items-center justify-between">
-          <span className="text-sm text-muted-foreground">Subtotal</span>
+          <span className="text-sm text-muted-foreground">
+            {hasSentItems && pendingItems.length > 0 ? "Total" : "Subtotal"}
+          </span>
           <span className="text-xl font-bold text-foreground">
-            {formatPrice(subtotal)}
+            {formatPrice(grandTotal)}
           </span>
         </div>
 
         <Button
           className="w-full h-12 text-base font-semibold gap-2 rounded-xl cursor-pointer"
-          disabled={items.length === 0}
+          disabled={pendingItems.length === 0 || isSending}
+          onClick={onSend}
         >
           <ChefHat className="h-5 w-5" />
-          Send to Kitchen
+          {isSending ? "Sending..." : sendLabel}
         </Button>
 
         <Dialog open={clearDialogOpen} onOpenChange={setClearDialogOpen}>
@@ -224,18 +353,18 @@ export function OrderPanel({
               <Button
                 variant="ghost"
                 className="w-full text-muted-foreground cursor-pointer"
-                disabled={items.length === 0}
+                disabled={pendingItems.length === 0}
               />
             }
           >
-            Clear Order
+            Clear New Items
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Clear Order?</DialogTitle>
+              <DialogTitle>Clear New Items?</DialogTitle>
               <DialogDescription>
-                This will remove all items from the current order. This action
-                cannot be undone.
+                This will remove all unsent items. Already-sent items will not
+                be affected.
               </DialogDescription>
             </DialogHeader>
             <DialogFooter>
@@ -254,7 +383,7 @@ export function OrderPanel({
                   setClearDialogOpen(false);
                 }}
               >
-                Clear Order
+                Clear Items
               </Button>
             </DialogFooter>
           </DialogContent>

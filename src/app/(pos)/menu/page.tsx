@@ -2,37 +2,118 @@
 
 import { Suspense, useState, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { toast } from "sonner";
 import { CategorySidebar } from "@/components/pos/category-sidebar";
 import { MenuGrid } from "@/components/pos/menu-grid";
 import { ModifierSheet } from "@/components/pos/modifier-sheet";
 import { OrderPanel } from "@/components/pos/order-panel";
 import { useMenu } from "@/hooks/use-menu";
+import { useSession } from "@/hooks/use-session";
+import {
+  useOrder,
+  useActiveTableOrder,
+  useSendToKitchen,
+} from "@/hooks/use-order";
 import { Button } from "@/components/ui/button";
 import { ShoppingBag, X } from "lucide-react";
 import type { MenuItem } from "@/hooks/use-menu";
 import type { OrderItemPayload } from "@/components/pos/modifier-sheet";
-import type { OrderItem } from "@/components/pos/order-panel";
+import type { PendingItem } from "@/hooks/use-order";
+
+// ---------------------------------------------------------------------------
+// Convert a PendingItem to the shape the API expects (items array element)
+// ---------------------------------------------------------------------------
+
+function toApiItem(
+  item: PendingItem,
+  addedByUserId: string
+): {
+  menuItemId: string;
+  menuItemName: string;
+  quantity: number;
+  unitPrice: number;
+  notes?: string;
+  selectedModifiers: Array<{
+    modifierOptionId?: string;
+    optionName: string;
+    priceAdjustment: number;
+  }>;
+  addedByUserId: string;
+} {
+  return {
+    menuItemId: item.menuItemId,
+    menuItemName: item.menuItemName,
+    quantity: item.quantity,
+    unitPrice: item.unitPrice,
+    notes: item.notes || undefined,
+    selectedModifiers: item.selectedModifiers,
+    addedByUserId,
+  };
+}
+
+// ---------------------------------------------------------------------------
+// MenuContent — inner component (has access to useSearchParams)
+// ---------------------------------------------------------------------------
 
 function MenuContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const tableParam = searchParams.get("table");
+
+  // URL params
+  const tableParamRaw = searchParams.get("table");
+  const tableParam = tableParamRaw ? Number(tableParamRaw) : null;
+  const orderIdParam = searchParams.get("orderId");
+  const typeParam = searchParams.get("type");
+
+  const isValidTable = tableParam !== null && !isNaN(tableParam) && tableParam > 0;
+  const tableNumber = isValidTable ? tableParam : null;
+
+  // Determine order type from URL
+  const orderType: "table" | "counter" | "takeaway" =
+    typeParam === "takeaway"
+      ? "takeaway"
+      : tableNumber !== null
+        ? "table"
+        : "counter";
+
   const tableLabel =
-    tableParam === "takeaway"
+    typeParam === "takeaway"
       ? "Takeaway"
-      : tableParam
-        ? `Table ${tableParam}`
+      : tableNumber !== null
+        ? `Table ${tableNumber}`
         : null;
 
-  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(
-    null
+  // Session for addedByUserId
+  const { user } = useSession();
+
+  // Track resolved orderId in state — may be set from URL param, active lookup, or after first send
+  const [resolvedOrderId, setResolvedOrderId] = useState<string | null>(
+    orderIdParam ?? null
   );
-  const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
+
+  // If no orderId in URL, look up an open order for this table (handles page refresh)
+  const { data: activeTableOrder } = useActiveTableOrder(
+    resolvedOrderId ? null : tableNumber
+  );
+
+  // Effective order ID: URL param → active lookup → state after send
+  const effectiveOrderId =
+    resolvedOrderId ?? activeTableOrder?.orderId ?? null;
+
+  // Load existing order from server
+  const { data: serverOrder } = useOrder(effectiveOrderId);
+
+  // Client-side pending items (not yet sent to kitchen)
+  const [pendingItems, setPendingItems] = useState<PendingItem[]>([]);
+
+  // UI state
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
   const [modifierSheetOpen, setModifierSheetOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null);
   const [orderPanelOpen, setOrderPanelOpen] = useState(false);
 
   const { categories, isLoading } = useMenu();
+  const sendToKitchen = useSendToKitchen();
 
   const displayItems = selectedCategoryId
     ? categories
@@ -40,48 +121,70 @@ function MenuContent() {
         .flatMap((c) => c.items ?? [])
     : categories.flatMap((c) => c.items ?? []);
 
-  const itemCount = orderItems.reduce((sum, item) => sum + item.quantity, 0);
+  const pendingCount = pendingItems.reduce((sum, item) => sum + item.quantity, 0);
 
-  const handleSelectItem = useCallback((item: MenuItem) => {
-    if (item.modifierGroups.length > 0) {
-      setSelectedItem(item);
-      setModifierSheetOpen(true);
-    } else {
-      const orderItem: OrderItem = {
-        id: crypto.randomUUID(),
-        item,
-        quantity: 1,
-        selectedModifiers: [],
-        notes: "",
-      };
-      setOrderItems((prev) => [...prev, orderItem]);
-    }
-  }, []);
-
-  const handleAddToOrder = useCallback((payload: OrderItemPayload) => {
-    const orderItem: OrderItem = {
-      id: crypto.randomUUID(),
-      ...payload,
+  // Build a PendingItem from a MenuItem (no modifiers)
+  const buildPendingItem = useCallback((menuItem: MenuItem): PendingItem => {
+    return {
+      tempId: crypto.randomUUID(),
+      menuItemId: menuItem.id,
+      menuItemName: menuItem.name,
+      quantity: 1,
+      unitPrice: Number(menuItem.price),
+      notes: "",
+      selectedModifiers: [],
     };
-    setOrderItems((prev) => [...prev, orderItem]);
   }, []);
 
-  const handleUpdateQuantity = useCallback((id: string, quantity: number) => {
+  const handleSelectItem = useCallback(
+    (item: MenuItem) => {
+      if (item.modifierGroups.length > 0) {
+        setSelectedItem(item);
+        setModifierSheetOpen(true);
+      } else {
+        const pendingItem = buildPendingItem(item);
+        setPendingItems((prev) => [...prev, pendingItem]);
+      }
+    },
+    [buildPendingItem]
+  );
+
+  // Called by ModifierSheet after user configures modifiers
+  const handleAddToOrder = useCallback((payload: OrderItemPayload) => {
+    const pendingItem: PendingItem = {
+      tempId: crypto.randomUUID(),
+      menuItemId: payload.item.id,
+      menuItemName: payload.item.name,
+      quantity: payload.quantity,
+      unitPrice: Number(payload.item.price),
+      notes: payload.notes,
+      selectedModifiers: payload.selectedModifiers.map((mod) => ({
+        modifierOptionId: mod.option.id,
+        optionName: mod.option.name,
+        priceAdjustment: Number(mod.option.priceAdjustment),
+      })),
+    };
+    setPendingItems((prev) => [...prev, pendingItem]);
+  }, []);
+
+  const handleUpdateQuantity = useCallback((tempId: string, quantity: number) => {
     if (quantity <= 0) {
-      setOrderItems((prev) => prev.filter((item) => item.id !== id));
+      setPendingItems((prev) => prev.filter((item) => item.tempId !== tempId));
     } else {
-      setOrderItems((prev) =>
-        prev.map((item) => (item.id === id ? { ...item, quantity } : item))
+      setPendingItems((prev) =>
+        prev.map((item) =>
+          item.tempId === tempId ? { ...item, quantity } : item
+        )
       );
     }
   }, []);
 
-  const handleRemoveItem = useCallback((id: string) => {
-    setOrderItems((prev) => prev.filter((item) => item.id !== id));
+  const handleRemoveItem = useCallback((tempId: string) => {
+    setPendingItems((prev) => prev.filter((item) => item.tempId !== tempId));
   }, []);
 
   const handleClearOrder = useCallback(() => {
-    setOrderItems([]);
+    setPendingItems([]);
   }, []);
 
   const handleChangeTable = useCallback(() => {
@@ -91,6 +194,48 @@ function MenuContent() {
   const handleSwitchUser = useCallback(() => {
     router.push("/login");
   }, [router]);
+
+  const handleSendToKitchen = useCallback(() => {
+    if (pendingItems.length === 0) return;
+    if (!user?.userId) {
+      toast.error("Session expired. Please sign in again.");
+      return;
+    }
+
+    const apiItems = pendingItems.map((item) =>
+      toApiItem(item, user.userId)
+    );
+
+    const payload = effectiveOrderId
+      ? { orderId: effectiveOrderId, items: apiItems }
+      : { tableNumber: tableNumber ?? undefined, orderType, items: apiItems };
+
+    sendToKitchen.mutate(payload, {
+      onSuccess: (data) => {
+        setPendingItems([]);
+        const newOrderId = data.id ?? data.orderId;
+        if (newOrderId) {
+          setResolvedOrderId(newOrderId);
+        }
+        const orderNum = data.orderNumber ?? data.order?.orderNumber ?? "";
+        toast.success(
+          orderNum
+            ? `Order #${orderNum} sent to kitchen`
+            : "Sent to kitchen"
+        );
+      },
+      onError: () => {
+        toast.error("Failed to send. Please try again.");
+      },
+    });
+  }, [
+    pendingItems,
+    user,
+    effectiveOrderId,
+    tableNumber,
+    orderType,
+    sendToKitchen,
+  ]);
 
   return (
     <>
@@ -151,13 +296,16 @@ function MenuContent() {
       {/* Desktop/large tablet: inline panel */}
       <aside className="hidden lg:block w-72 xl:w-80 border-l bg-card flex-shrink-0">
         <OrderPanel
-          items={orderItems}
+          serverOrder={serverOrder ?? null}
+          pendingItems={pendingItems}
           tableLabel={tableLabel}
           onUpdateQuantity={handleUpdateQuantity}
           onRemoveItem={handleRemoveItem}
           onClearOrder={handleClearOrder}
           onChangeTable={handleChangeTable}
           onSwitchUser={handleSwitchUser}
+          onSend={handleSendToKitchen}
+          isSending={sendToKitchen.isPending}
         />
       </aside>
 
@@ -173,9 +321,9 @@ function MenuContent() {
             <span className="font-semibold">
               {tableLabel ?? "Order"}
             </span>
-            {itemCount > 0 && (
+            {pendingCount > 0 && (
               <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary-foreground text-primary text-xs font-bold">
-                {itemCount}
+                {pendingCount}
               </span>
             )}
           </button>
@@ -204,13 +352,16 @@ function MenuContent() {
             <X className="h-5 w-5" />
           </Button>
           <OrderPanel
-            items={orderItems}
+            serverOrder={serverOrder ?? null}
+            pendingItems={pendingItems}
             tableLabel={tableLabel}
             onUpdateQuantity={handleUpdateQuantity}
             onRemoveItem={handleRemoveItem}
             onClearOrder={handleClearOrder}
             onChangeTable={handleChangeTable}
             onSwitchUser={handleSwitchUser}
+            onSend={handleSendToKitchen}
+            isSending={sendToKitchen.isPending}
           />
         </div>
       </div>

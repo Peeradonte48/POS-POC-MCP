@@ -40,11 +40,13 @@ describe("Smoke tests", () => {
   it("renders OrderPanel with empty state", () => {
     render(
       <OrderPanel
-        items={[]}
+        serverOrder={null}
+        pendingItems={[]}
         onUpdateQuantity={() => {}}
         onRemoveItem={() => {}}
         onClearOrder={() => {}}
         onSwitchUser={() => {}}
+        onSend={() => {}}
       />
     );
     expect(screen.getByText("No items added")).toBeDefined();
