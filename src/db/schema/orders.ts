@@ -52,6 +52,9 @@ export const orders = pgTable("orders", {
   orderNumber: integer("order_number").notNull(),
   openedAt: timestamp("opened_at").defaultNow().notNull(),
   completedAt: timestamp("completed_at"),
+  voidedAt: timestamp("voided_at"),
+  voidedByUserId: uuid("voided_by_user_id").references(() => users.id),
+  voidNote: text("void_note"),
   createdByUserId: uuid("created_by_user_id")
     .notNull()
     .references(() => users.id),
