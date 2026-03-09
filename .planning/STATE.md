@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: completed
-stopped_at: Completed 02-04 (Order Flow UI Integration)
-last_updated: "2026-03-09T18:59:25.228Z"
+stopped_at: Completed 02-05 (Void Flow)
+last_updated: "2026-03-09T19:09:10.881Z"
 last_activity: 2026-03-10 -- Completed 01-04 (POS Floor Interface)
 progress:
   total_phases: 6
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 9
-  completed_plans: 8
+  completed_plans: 9
   percent: 100
 ---
 
@@ -50,6 +50,7 @@ Progress: [██████████] 100% (Phase 1)
 | Phase 02-order-flow-table-management P02 | 4 | 2 tasks | 5 files |
 | Phase 02-order-flow-table-management P03 | 5 | 3 tasks | 5 files |
 | Phase 02-order-flow-table-management P04 | 18 | 2 tasks | 5 files |
+| Phase 02-order-flow-table-management P05 | 5 | 2 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -84,6 +85,8 @@ Recent decisions affecting current work:
 - [Phase 02-04]: PendingItem uses flat structure separate from OrderItem — maps directly to API payload without transformation
 - [Phase 02-04]: resolvedOrderId state in menu page tracks orderId after first send without URL navigation
 - [Phase 02-04]: POST /api/orders returns orderId (not id) — hook normalizes via data.id ?? data.orderId
+- [Phase 02-05]: verify-pin always returns 200 with {valid, userId} — HTTP errors reserved for auth/validation failures, business-level PIN failure handled by UI
+- [Phase 02-05]: voidedAt on orders table instead of new order_status enum value — avoids Postgres enum table rewrite migration risk
 
 ### Pending Todos
 
@@ -98,6 +101,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-09T18:59:16.684Z
-Stopped at: Completed 02-04 (Order Flow UI Integration)
+Last session: 2026-03-09T19:09:10.879Z
+Stopped at: Completed 02-05 (Void Flow)
 Resume file: None
