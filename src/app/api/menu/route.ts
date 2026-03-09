@@ -20,7 +20,14 @@ export async function GET(request: NextRequest) {
     }
 
     const session = await verifySession(token);
-    const brandId = session.brandId;
+
+    // Admin can specify a brandId query param; others use their session brandId
+    const { searchParams } = new URL(request.url);
+    const queryBrandId = searchParams.get("brandId");
+    const brandId =
+      queryBrandId && (session.role === "admin" || session.role === "manager")
+        ? queryBrandId
+        : session.brandId;
 
     // Fetch categories for this brand
     const categories = await db
