@@ -10,6 +10,7 @@ import {
   modifierOptions,
 } from "./schema/menu";
 import { syncLogs } from "./schema/sync-logs";
+import { orders, orderItems, orderItemModifiers } from "./schema/orders";
 
 export const brandsRelations = relations(brands, ({ many }) => ({
   locations: many(locations),
@@ -109,3 +110,55 @@ export const syncLogsRelations = relations(syncLogs, ({ one }) => ({
     references: [brands.id],
   }),
 }));
+
+export const ordersRelations = relations(orders, ({ one, many }) => ({
+  brand: one(brands, {
+    fields: [orders.brandId],
+    references: [brands.id],
+  }),
+  location: one(locations, {
+    fields: [orders.locationId],
+    references: [locations.id],
+  }),
+  createdBy: one(users, {
+    fields: [orders.createdByUserId],
+    references: [users.id],
+  }),
+  items: many(orderItems),
+}));
+
+export const orderItemsRelations = relations(orderItems, ({ one, many }) => ({
+  order: one(orders, {
+    fields: [orderItems.orderId],
+    references: [orders.id],
+  }),
+  menuItem: one(menuItems, {
+    fields: [orderItems.menuItemId],
+    references: [menuItems.id],
+  }),
+  addedBy: one(users, {
+    fields: [orderItems.addedByUserId],
+    references: [users.id],
+    relationName: "orderItemAddedBy",
+  }),
+  voidedBy: one(users, {
+    fields: [orderItems.voidedByUserId],
+    references: [users.id],
+    relationName: "orderItemVoidedBy",
+  }),
+  modifiers: many(orderItemModifiers),
+}));
+
+export const orderItemModifiersRelations = relations(
+  orderItemModifiers,
+  ({ one }) => ({
+    orderItem: one(orderItems, {
+      fields: [orderItemModifiers.orderItemId],
+      references: [orderItems.id],
+    }),
+    modifierOption: one(modifierOptions, {
+      fields: [orderItemModifiers.modifierOptionId],
+      references: [modifierOptions.id],
+    }),
+  })
+);
