@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: completed
-stopped_at: Completed 02-02 (Order API Routes)
-last_updated: "2026-03-09T18:50:23.821Z"
+stopped_at: Completed 02-03 (Live table grid and Order History)
+last_updated: "2026-03-09T18:52:05.905Z"
 last_activity: 2026-03-10 -- Completed 01-04 (POS Floor Interface)
 progress:
   total_phases: 6
   completed_phases: 1
   total_plans: 9
-  completed_plans: 6
+  completed_plans: 7
   percent: 100
 ---
 
@@ -48,6 +48,7 @@ Progress: [██████████] 100% (Phase 1)
 *Updated after each plan completion*
 | Phase 02-order-flow-table-management P01 | 5 | 3 tasks | 5 files |
 | Phase 02-order-flow-table-management P02 | 4 | 2 tasks | 5 files |
+| Phase 02-order-flow-table-management P03 | 5 | 3 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -76,6 +77,9 @@ Recent decisions affecting current work:
 - [Phase 02-01]: manager:delete maps to void capability on orders resource
 - [Phase 02-02]: menuItemName required in itemSchema: client provides snapshot name at order creation time (notNull in DB)
 - [Phase 02-02]: Shared Zod schemas in src/lib/order-schemas.ts used by all three order route files
+- [Phase 02-03]: cashier and manager granted orders:read — required for table status display and order history access
+- [Phase 02-03]: Table order total computed via 3-query inArray batch pattern to avoid N+1 queries
+- [Phase 02-03]: OrderHistorySheet uses enabled:open in React Query for lazy-load on sheet open
 
 ### Pending Todos
 
@@ -90,6 +94,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-09T18:50:23.820Z
-Stopped at: Completed 02-02 (Order API Routes)
+Last session: 2026-03-09T18:52:05.903Z
+Stopped at: Completed 02-03 (Live table grid and Order History)
 Resume file: None
