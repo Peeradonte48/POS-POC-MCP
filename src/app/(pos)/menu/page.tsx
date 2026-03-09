@@ -294,7 +294,7 @@ function MenuContent() {
       {/* Column 3: Order panel — always visible on large screens, slide-over on tablets */}
 
       {/* Desktop/large tablet: inline panel */}
-      <aside className="hidden lg:block w-72 xl:w-80 border-l bg-card flex-shrink-0">
+      <aside className="hidden lg:block w-72 xl:w-80 border-l bg-card flex-shrink-0 overflow-hidden">
         <OrderPanel
           serverOrder={serverOrder ?? null}
           pendingItems={pendingItems}
@@ -339,7 +339,7 @@ function MenuContent() {
 
         {/* Slide-over panel */}
         <div
-          className={`fixed inset-y-0 right-0 z-50 w-80 max-w-[85vw] bg-card border-l shadow-xl transition-transform duration-200 ${
+          className={`fixed inset-y-0 right-0 z-50 w-80 max-w-[85vw] bg-card border-l shadow-xl transition-transform duration-200 overflow-hidden ${
             orderPanelOpen ? "translate-x-0" : "translate-x-full"
           }`}
         >
