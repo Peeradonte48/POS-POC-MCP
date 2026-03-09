@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: completed
-stopped_at: Completed 02-01 (Order schema + permissions)
-last_updated: "2026-03-09T18:44:22.164Z"
+stopped_at: Completed 02-02 (Order API Routes)
+last_updated: "2026-03-09T18:50:23.821Z"
 last_activity: 2026-03-10 -- Completed 01-04 (POS Floor Interface)
 progress:
   total_phases: 6
   completed_phases: 1
   total_plans: 9
-  completed_plans: 5
+  completed_plans: 6
   percent: 100
 ---
 
@@ -47,6 +47,7 @@ Progress: [██████████] 100% (Phase 1)
 
 *Updated after each plan completion*
 | Phase 02-order-flow-table-management P01 | 5 | 3 tasks | 5 files |
+| Phase 02-order-flow-table-management P02 | 4 | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -73,6 +74,8 @@ Recent decisions affecting current work:
 - [Phase 02-01]: Snapshot columns on order_items (menuItemName, unitPrice, optionName) for durable order history
 - [Phase 02-01]: modifierOptionId is nullable FK — order history preserved via optionName snapshot if modifier deleted
 - [Phase 02-01]: manager:delete maps to void capability on orders resource
+- [Phase 02-02]: menuItemName required in itemSchema: client provides snapshot name at order creation time (notNull in DB)
+- [Phase 02-02]: Shared Zod schemas in src/lib/order-schemas.ts used by all three order route files
 
 ### Pending Todos
 
@@ -87,6 +90,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-09T18:44:22.162Z
-Stopped at: Completed 02-01 (Order schema + permissions)
+Last session: 2026-03-09T18:50:23.820Z
+Stopped at: Completed 02-02 (Order API Routes)
 Resume file: None
