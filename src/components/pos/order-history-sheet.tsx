@@ -104,7 +104,7 @@ export function OrderHistorySheet({ open, onOpenChange }: OrderHistorySheetProps
                       {thbFormatter.format(order.total)}
                     </span>
                     <span className="text-xs text-muted-foreground">
-                      {order.itemCount} item{order.itemCount === 1 ? "" : "s"} &middot;{" "}
+                      {order.itemCount} item{order.itemCount === 1 ? "" : "s"} ·{" "}
                       {formatCompletionTime(order.completedAt)}
                     </span>
                   </div>
