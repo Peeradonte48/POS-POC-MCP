@@ -1,6 +1,7 @@
 "use client";
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import type { VoidReason } from "@/lib/void-schemas";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -162,6 +163,74 @@ export function useSendToKitchen() {
       }
       queryClient.invalidateQueries({ queryKey: ["tables"] });
       queryClient.invalidateQueries({ queryKey: ["activeTableOrder"] });
+    },
+  });
+}
+
+// ---------------------------------------------------------------------------
+// useVoidItem — soft-delete a single sent order item
+// ---------------------------------------------------------------------------
+
+export function useVoidItem() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({
+      orderId,
+      itemId,
+      reason,
+      note,
+      authorizedByUserId,
+    }: {
+      orderId: string;
+      itemId: string;
+      reason: VoidReason;
+      note?: string;
+      authorizedByUserId: string;
+    }) => {
+      const res = await fetch(`/api/orders/${orderId}/items/${itemId}/void`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ reason, note, authorizedByUserId }),
+      });
+      if (!res.ok) throw new Error("Void item failed");
+      return res.json();
+    },
+    onSuccess: (_, vars) => {
+      queryClient.invalidateQueries({ queryKey: ["order", vars.orderId] });
+      queryClient.invalidateQueries({ queryKey: ["tables"] });
+    },
+  });
+}
+
+// ---------------------------------------------------------------------------
+// useVoidOrder — void an entire open order
+// ---------------------------------------------------------------------------
+
+export function useVoidOrder() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({
+      orderId,
+      reason,
+      note,
+      authorizedByUserId,
+    }: {
+      orderId: string;
+      reason: VoidReason;
+      note?: string;
+      authorizedByUserId: string;
+    }) => {
+      const res = await fetch(`/api/orders/${orderId}/void`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ reason, note, authorizedByUserId }),
+      });
+      if (!res.ok) throw new Error("Void order failed");
+      return res.json();
+    },
+    onSuccess: (_, vars) => {
+      queryClient.invalidateQueries({ queryKey: ["order", vars.orderId] });
+      queryClient.invalidateQueries({ queryKey: ["tables"] });
     },
   });
 }

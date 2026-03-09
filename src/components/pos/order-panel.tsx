@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/dialog";
 import { Minus, Plus, Trash2, ShoppingBag, ChefHat } from "lucide-react";
 import type { OrderWithItems, PendingItem } from "@/hooks/use-order";
+import { VoidReasonDialog } from "@/components/pos/void-reason-dialog";
 
 // ---------------------------------------------------------------------------
 // Formatters
@@ -41,7 +42,6 @@ interface OrderPanelProps {
   onSwitchUser: () => void;
   onSend: () => void;
   isSending?: boolean;
-  onVoidItem?: (itemId: string) => void; // reserved for Plan 02-05
 }
 
 // ---------------------------------------------------------------------------
@@ -61,6 +61,11 @@ export function OrderPanel({
   isSending = false,
 }: OrderPanelProps) {
   const [clearDialogOpen, setClearDialogOpen] = useState(false);
+  const [voidDialogState, setVoidDialogState] = useState<{
+    open: boolean;
+    mode: "item" | "order";
+    itemId?: string;
+  }>({ open: false, mode: "item" });
 
   // Group sent items by round number
   const sentItems = (serverOrder?.items ?? []).filter(
@@ -200,6 +205,20 @@ export function OrderPanel({
                             <span className="text-[10px] font-medium bg-muted text-muted-foreground rounded px-1.5 py-0.5">
                               Sent
                             </span>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-6 w-6 text-destructive hover:text-destructive cursor-pointer"
+                              onClick={() =>
+                                setVoidDialogState({
+                                  open: true,
+                                  mode: "item",
+                                  itemId: item.id,
+                                })
+                              }
+                            >
+                              <Trash2 className="h-3 w-3" />
+                            </Button>
                           </div>
                         </div>
                       </div>
@@ -388,7 +407,36 @@ export function OrderPanel({
             </DialogFooter>
           </DialogContent>
         </Dialog>
+
+        {/* Void Order button — visible only when there is an open server order */}
+        {serverOrder && serverOrder.status === "open" && (
+          <Button
+            variant="ghost"
+            className="w-full text-destructive hover:text-destructive cursor-pointer"
+            onClick={() =>
+              setVoidDialogState({ open: true, mode: "order" })
+            }
+          >
+            Void Order
+          </Button>
+        )}
       </div>
+
+      {/* Void reason dialog */}
+      {serverOrder && (
+        <VoidReasonDialog
+          open={voidDialogState.open}
+          onOpenChange={(open) =>
+            setVoidDialogState((prev) => ({ ...prev, open }))
+          }
+          mode={voidDialogState.mode}
+          orderId={serverOrder.id}
+          itemId={voidDialogState.itemId}
+          onSuccess={() => {
+            setVoidDialogState({ open: false, mode: "item" });
+          }}
+        />
+      )}
     </div>
   );
 }
