@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: executing
-stopped_at: Completed 01-02-PLAN.md
-last_updated: "2026-03-09T15:37:09Z"
-last_activity: 2026-03-09 -- Completed 01-02 (Auth & RBAC)
+status: completed
+stopped_at: Phase 2 context gathered
+last_updated: "2026-03-09T18:11:09.621Z"
+last_activity: 2026-03-10 -- Completed 01-04 (POS Floor Interface)
 progress:
   total_phases: 6
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 4
-  completed_plans: 2
-  percent: 50
+  completed_plans: 4
+  percent: 100
 ---
 
 # Project State
@@ -21,33 +21,29 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-09)
 
 **Core value:** Cashiers and servers can take orders and process payments without friction -- the order-to-payment flow must work reliably every time.
-**Current focus:** Phase 1: Foundation & Multi-Brand Setup
+**Current focus:** Phase 1 COMPLETE. Next: Phase 2 (Order Flow & Table Management)
 
 ## Current Position
 
-Phase: 1 of 6 (Foundation & Multi-Brand Setup)
-Plan: 2 of 4 in current phase
-Status: Executing
-Last activity: 2026-03-09 -- Completed 01-02 (Auth & RBAC)
+Phase: 1 of 6 (Foundation & Multi-Brand Setup) -- COMPLETE
+Plan: 4 of 4 in current phase -- ALL DONE
+Status: Phase Complete
+Last activity: 2026-03-10 -- Completed 01-04 (POS Floor Interface)
 
-Progress: [█████░░░░░] 50%
+Progress: [██████████] 100% (Phase 1)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 2
-- Average duration: 5 min
-- Total execution time: 0.17 hours
+- Total plans completed: 4
+- Average duration: ~20 min
+- Total execution time: ~1.5 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 1 | 2 | 10 min | 5 min |
-
-**Recent Trend:**
-- Last 5 plans: 01-01 (8 min), 01-02 (2 min)
-- Trend: Improving
+| 1 | 4 | ~80 min | ~20 min |
 
 *Updated after each plan completion*
 
@@ -65,6 +61,14 @@ Recent decisions affecting current work:
 - [01-01]: Shared-schema multi-tenancy via brandId FK on all tenant-scoped tables
 - [01-02]: Static RBAC with 8 resources (brands, locations, staff, menu, settings, reports, orders, sync)
 - [01-02]: Invalid session cookies cleared on redirect to prevent loops
+- [01-03]: Admin login in separate route group (admin-auth) to avoid redirect loop
+- [01-03]: ERP sync uses adapter pattern with mock data
+- [01-04]: Terminal selection UI instead of query param
+- [01-04]: Auto-submit PIN on 4 digits
+- [01-04]: Table selection before menu browsing
+- [01-04]: Floating cart pattern for tablet responsiveness
+- [01-04]: 100dvh for iOS Safari compatibility
+- [01-04]: Warm restaurant theme with OKLCH colors (terracotta primary, cream background)
 
 ### Pending Todos
 
@@ -79,6 +83,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-09T15:37:09Z
-Stopped at: Completed 01-02-PLAN.md
-Resume file: .planning/phases/01-foundation-multi-brand-setup/01-03-PLAN.md
+Last session: 2026-03-09T18:11:09.612Z
+Stopped at: Phase 2 context gathered
+Resume file: .planning/phases/02-order-flow-table-management/02-CONTEXT.md
