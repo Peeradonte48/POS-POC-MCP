@@ -1,6 +1,11 @@
 import { describe, it, expect } from "vitest";
 import { z } from "zod";
 import { hasPermission } from "@/lib/permissions";
+import {
+  voidItemSchema,
+  voidOrderSchema,
+  verifyPinSchema,
+} from "@/lib/void-schemas";
 
 // ---------------------------------------------------------------------------
 // Zod schemas (mirroring what the API routes will define)
@@ -318,5 +323,117 @@ describe("Permissions: orders resource RBAC", () => {
     expect(hasPermission("admin", "orders", "update")).toBe(true);
     expect(hasPermission("admin", "orders", "delete")).toBe(true);
     expect(hasPermission("admin", "orders", "read")).toBe(true);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// verify-pin schema (from void-schemas.ts)
+// ---------------------------------------------------------------------------
+
+describe("verify-pin schema", () => {
+  it("should accept valid pin and requiredRole=manager", () => {
+    const result = verifyPinSchema.safeParse({
+      pin: "1234",
+      requiredRole: "manager",
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("should accept requiredRole=admin", () => {
+    const result = verifyPinSchema.safeParse({
+      pin: "5678",
+      requiredRole: "admin",
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("should reject missing pin", () => {
+    const result = verifyPinSchema.safeParse({ requiredRole: "manager" });
+    expect(result.success).toBe(false);
+  });
+
+  it("should reject invalid requiredRole", () => {
+    const result = verifyPinSchema.safeParse({ pin: "1234", requiredRole: "cashier" });
+    expect(result.success).toBe(false);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// voidItemSchema — item-level void request body
+// ---------------------------------------------------------------------------
+
+describe("voidItemSchema", () => {
+  it("should accept valid reason and authorizedByUserId", () => {
+    const result = voidItemSchema.safeParse({
+      reason: "wrong_item",
+      authorizedByUserId: "00000000-0000-0000-0000-000000000001",
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("should accept with optional note", () => {
+    const result = voidItemSchema.safeParse({
+      reason: "food_quality",
+      note: "Was cold",
+      authorizedByUserId: "00000000-0000-0000-0000-000000000001",
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("should reject invalid reason", () => {
+    const result = voidItemSchema.safeParse({
+      reason: "bad_mood",
+      authorizedByUserId: "00000000-0000-0000-0000-000000000001",
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it("should reject missing authorizedByUserId", () => {
+    const result = voidItemSchema.safeParse({ reason: "wrong_item" });
+    expect(result.success).toBe(false);
+  });
+
+  it("should reject non-uuid authorizedByUserId", () => {
+    const result = voidItemSchema.safeParse({
+      reason: "wrong_item",
+      authorizedByUserId: "not-a-uuid",
+    });
+    expect(result.success).toBe(false);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// voidOrderSchema — order-level void request body
+// ---------------------------------------------------------------------------
+
+describe("voidOrderSchema", () => {
+  it("should accept valid reason and authorizedByUserId", () => {
+    const result = voidOrderSchema.safeParse({
+      reason: "staff_error",
+      authorizedByUserId: "00000000-0000-0000-0000-000000000001",
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("should accept with optional note", () => {
+    const result = voidOrderSchema.safeParse({
+      reason: "other",
+      note: "Test void",
+      authorizedByUserId: "00000000-0000-0000-0000-000000000001",
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("should reject invalid reason", () => {
+    const result = voidOrderSchema.safeParse({
+      reason: "invalid_reason",
+      authorizedByUserId: "00000000-0000-0000-0000-000000000001",
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it("should reject missing authorizedByUserId", () => {
+    const result = voidOrderSchema.safeParse({ reason: "staff_error" });
+    expect(result.success).toBe(false);
   });
 });
