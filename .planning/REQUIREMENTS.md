@@ -17,12 +17,12 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Order Management
 
-- [ ] **ORDR-01**: Staff can create orders by adding items with modifiers and quantities
-- [ ] **ORDR-02**: Staff can edit orders (change quantity, remove items, add notes) before sending to kitchen
-- [ ] **ORDR-03**: Staff can assign orders to tables for table service
-- [ ] **ORDR-04**: Staff can transfer orders between tables without losing data
-- [ ] **ORDR-05**: Staff can create counter/queue orders with auto-incrementing order numbers
-- [ ] **ORDR-06**: Staff can void items or entire orders with manager authorization and reason tracking
+- [x] **ORDR-01**: Staff can create orders by adding items with modifiers and quantities
+- [x] **ORDR-02**: Staff can edit orders (change quantity, remove items, add notes) before sending to kitchen
+- [x] **ORDR-03**: Staff can assign orders to tables for table service
+- [x] **ORDR-04**: Staff can transfer orders between tables without losing data
+- [x] **ORDR-05**: Staff can create counter/queue orders with auto-incrementing order numbers
+- [x] **ORDR-06**: Staff can void items or entire orders with manager authorization and reason tracking
 
 ### Kitchen Operations
 
@@ -153,12 +153,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 | MBML-04 | Phase 1 | Complete (01-01) |
 | MBML-05 | Phase 1 | Complete |
 | UIUX-03 | Phase 1 | Complete |
-| ORDR-01 | Phase 2 | Pending |
-| ORDR-02 | Phase 2 | Pending |
-| ORDR-03 | Phase 2 | Pending |
-| ORDR-04 | Phase 2 | Pending |
-| ORDR-05 | Phase 2 | Pending |
-| ORDR-06 | Phase 2 | Pending |
+| ORDR-01 | Phase 2 | Complete |
+| ORDR-02 | Phase 2 | Complete |
+| ORDR-03 | Phase 2 | Complete |
+| ORDR-04 | Phase 2 | Complete |
+| ORDR-05 | Phase 2 | Complete |
+| ORDR-06 | Phase 2 | Complete |
 | KTCH-01 | Phase 3 | Pending |
 | KTCH-02 | Phase 3 | Pending |
 | KTCH-03 | Phase 3 | Pending |

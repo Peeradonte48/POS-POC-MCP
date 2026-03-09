@@ -49,7 +49,7 @@ Plans:
   3. Staff can create counter/queue orders that receive auto-incrementing order numbers
   4. Staff can edit an order (change quantities, remove items, add notes) before it is sent to kitchen
   5. Manager can void items or entire orders with reason tracking and authorization required
-**Plans:** 5 plans
+**Plans:** 1/5 plans executed
 
 Plans:
 - [ ] 02-01-PLAN.md -- Order schema (DB tables + enums), permissions update, and test scaffold (TDD)
@@ -134,7 +134,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation & Multi-Brand Setup | 1/4 | In progress | - |
-| 2. Order Flow & Table Management | 0/5 | Not started | - |
+| 2. Order Flow & Table Management | 1/5 | In Progress|  |
 | 3. Kitchen Communication | 0/3 | Not started | - |
 | 4. Billing & Payments | 0/4 | Not started | - |
 | 5. Promotions & Reporting | 0/3 | Not started | - |

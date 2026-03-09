@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: completed
-stopped_at: Phase 2 context gathered
-last_updated: "2026-03-09T18:11:09.621Z"
+stopped_at: Completed 02-01 (Order schema + permissions)
+last_updated: "2026-03-09T18:44:22.164Z"
 last_activity: 2026-03-10 -- Completed 01-04 (POS Floor Interface)
 progress:
   total_phases: 6
   completed_phases: 1
-  total_plans: 4
-  completed_plans: 4
+  total_plans: 9
+  completed_plans: 5
   percent: 100
 ---
 
@@ -46,6 +46,7 @@ Progress: [██████████] 100% (Phase 1)
 | 1 | 4 | ~80 min | ~20 min |
 
 *Updated after each plan completion*
+| Phase 02-order-flow-table-management P01 | 5 | 3 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -69,6 +70,9 @@ Recent decisions affecting current work:
 - [01-04]: Floating cart pattern for tablet responsiveness
 - [01-04]: 100dvh for iOS Safari compatibility
 - [01-04]: Warm restaurant theme with OKLCH colors (terracotta primary, cream background)
+- [Phase 02-01]: Snapshot columns on order_items (menuItemName, unitPrice, optionName) for durable order history
+- [Phase 02-01]: modifierOptionId is nullable FK — order history preserved via optionName snapshot if modifier deleted
+- [Phase 02-01]: manager:delete maps to void capability on orders resource
 
 ### Pending Todos
 
@@ -83,6 +87,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-09T18:11:09.612Z
-Stopped at: Phase 2 context gathered
-Resume file: .planning/phases/02-order-flow-table-management/02-CONTEXT.md
+Last session: 2026-03-09T18:44:22.162Z
+Stopped at: Completed 02-01 (Order schema + permissions)
+Resume file: None
