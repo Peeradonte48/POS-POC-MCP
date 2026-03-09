@@ -26,11 +26,11 @@ const PERMISSIONS: Record<Role, Partial<Record<Resource, Action[]>>> = {
     staff: ["read"],
     menu: ["read"],
     reports: ["read"],
-    orders: ["create", "update", "delete"],
+    orders: ["read", "create", "update", "delete"],
   },
   cashier: {
     menu: ["read"],
-    orders: ["create", "update"],
+    orders: ["read", "create", "update"],
   },
 };
 
