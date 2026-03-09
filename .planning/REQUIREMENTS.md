@@ -1,7 +1,7 @@
 # Requirements: A RAMEN POS
 
 **Defined:** 2026-03-09
-**Core Value:** Cashiers and servers can take orders and process payments without friction — the order-to-payment flow must work reliably every time.
+**Core Value:** Cashiers and servers can take orders and process payments without friction -- the order-to-payment flow must work reliably every time.
 
 ## v1 Requirements
 
@@ -142,13 +142,66 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| (populated during roadmap creation) | | |
+| MENU-01 | Phase 1 | Pending |
+| MENU-02 | Phase 1 | Pending |
+| MENU-03 | Phase 1 | Pending |
+| MENU-04 | Phase 1 | Pending |
+| MENU-05 | Phase 1 | Pending |
+| MBML-01 | Phase 1 | Pending |
+| MBML-02 | Phase 1 | Pending |
+| MBML-03 | Phase 1 | Pending |
+| MBML-04 | Phase 1 | Pending |
+| MBML-05 | Phase 1 | Pending |
+| UIUX-03 | Phase 1 | Pending |
+| ORDR-01 | Phase 2 | Pending |
+| ORDR-02 | Phase 2 | Pending |
+| ORDR-03 | Phase 2 | Pending |
+| ORDR-04 | Phase 2 | Pending |
+| ORDR-05 | Phase 2 | Pending |
+| ORDR-06 | Phase 2 | Pending |
+| KTCH-01 | Phase 3 | Pending |
+| KTCH-02 | Phase 3 | Pending |
+| KTCH-03 | Phase 3 | Pending |
+| KTCH-04 | Phase 3 | Pending |
+| KTCH-05 | Phase 3 | Pending |
+| BILL-01 | Phase 4 | Pending |
+| BILL-02 | Phase 4 | Pending |
+| BILL-03 | Phase 4 | Pending |
+| BILL-04 | Phase 4 | Pending |
+| BILL-05 | Phase 4 | Pending |
+| BILL-06 | Phase 4 | Pending |
+| BILL-07 | Phase 4 | Pending |
+| BILL-08 | Phase 4 | Pending |
+| BILL-09 | Phase 4 | Pending |
+| BILL-10 | Phase 4 | Pending |
+| PAY-01 | Phase 4 | Pending |
+| PAY-02 | Phase 4 | Pending |
+| PAY-03 | Phase 4 | Pending |
+| PAY-04 | Phase 4 | Pending |
+| PAY-05 | Phase 4 | Pending |
+| PAY-06 | Phase 4 | Pending |
+| PAY-07 | Phase 4 | Pending |
+| PRMO-01 | Phase 5 | Pending |
+| PRMO-02 | Phase 5 | Pending |
+| PRMO-03 | Phase 5 | Pending |
+| PRMO-04 | Phase 5 | Pending |
+| REPT-01 | Phase 5 | Pending |
+| REPT-02 | Phase 5 | Pending |
+| REPT-03 | Phase 5 | Pending |
+| ERP-01 | Phase 6 | Pending |
+| ERP-02 | Phase 6 | Pending |
+| ERP-03 | Phase 6 | Pending |
+| ERP-04 | Phase 6 | Pending |
+| UIUX-01 | Phase 6 | Pending |
+| UIUX-02 | Phase 6 | Pending |
+| UIUX-04 | Phase 6 | Pending |
+| UIUX-05 | Phase 6 | Pending |
 
 **Coverage:**
-- v1 requirements: 46 total
-- Mapped to phases: 0
-- Unmapped: 46 ⚠️
+- v1 requirements: 54 total
+- Mapped to phases: 54
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-03-09*
-*Last updated: 2026-03-09 after initial definition*
+*Last updated: 2026-03-09 after roadmap creation*

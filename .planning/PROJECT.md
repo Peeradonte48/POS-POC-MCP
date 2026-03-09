@@ -71,6 +71,7 @@ Cashiers and servers can take orders and process payments without friction — t
 |----------|-----------|---------|
 | Replace FoodStory entirely | Customization limits and missing promotion features make it unsuitable | — Pending |
 | Web-based POS (not native app) | Aligns with ERP stack, easier deployment across devices | — Pending |
+| shadcn/ui for all UI components | Already installed, consistent design system, MCP available for component search | — Pending |
 | Vouchers/coupons over loyalty for v1 | Immediate business need, loyalty can come in v2 | — Pending |
 | ERP as source of truth for menu/pricing | Centralizes management, POS consumes | — Pending |
 
