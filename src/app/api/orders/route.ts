@@ -78,7 +78,7 @@ export async function POST(request: NextRequest) {
           .values({
             orderId: newOrder.id,
             menuItemId: item.menuItemId,
-            menuItemName: item.menuItemId, // will be resolved by client; snapshot required
+            menuItemName: item.menuItemName,
             unitPrice: String(item.unitPrice),
             quantity: item.quantity,
             notes: item.notes ?? null,

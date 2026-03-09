@@ -62,6 +62,7 @@ describe("itemSchema", () => {
   it("accepts a valid item with all required fields", () => {
     const result = itemSchema.safeParse({
       menuItemId: "00000000-0000-0000-0000-000000000001",
+      menuItemName: "Tonkotsu Ramen",
       quantity: 2,
       unitPrice: 150,
       addedByUserId: "00000000-0000-0000-0000-000000000099",
@@ -72,6 +73,7 @@ describe("itemSchema", () => {
   it("accepts a valid item with notes and selectedModifiers", () => {
     const result = itemSchema.safeParse({
       menuItemId: "00000000-0000-0000-0000-000000000001",
+      menuItemName: "Tonkotsu Ramen",
       quantity: 1,
       unitPrice: 180,
       notes: "Extra spicy please",
@@ -86,6 +88,7 @@ describe("itemSchema", () => {
   it("defaults selectedModifiers to empty array when omitted", () => {
     const result = itemSchema.safeParse({
       menuItemId: "00000000-0000-0000-0000-000000000001",
+      menuItemName: "Tonkotsu Ramen",
       quantity: 1,
       unitPrice: 100,
       addedByUserId: "00000000-0000-0000-0000-000000000099",
@@ -99,6 +102,7 @@ describe("itemSchema", () => {
   it("rejects an item with quantity less than 1", () => {
     const result = itemSchema.safeParse({
       menuItemId: "00000000-0000-0000-0000-000000000001",
+      menuItemName: "Tonkotsu Ramen",
       quantity: 0,
       unitPrice: 100,
       addedByUserId: "00000000-0000-0000-0000-000000000099",
@@ -109,6 +113,7 @@ describe("itemSchema", () => {
   it("rejects an item with negative unitPrice", () => {
     const result = itemSchema.safeParse({
       menuItemId: "00000000-0000-0000-0000-000000000001",
+      menuItemName: "Tonkotsu Ramen",
       quantity: 1,
       unitPrice: -5,
       addedByUserId: "00000000-0000-0000-0000-000000000099",
@@ -119,8 +124,19 @@ describe("itemSchema", () => {
   it("rejects an item missing addedByUserId", () => {
     const result = itemSchema.safeParse({
       menuItemId: "00000000-0000-0000-0000-000000000001",
+      menuItemName: "Tonkotsu Ramen",
       quantity: 1,
       unitPrice: 100,
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it("rejects an item missing menuItemName", () => {
+    const result = itemSchema.safeParse({
+      menuItemId: "00000000-0000-0000-0000-000000000001",
+      quantity: 1,
+      unitPrice: 100,
+      addedByUserId: "00000000-0000-0000-0000-000000000099",
     });
     expect(result.success).toBe(false);
   });
@@ -128,6 +144,7 @@ describe("itemSchema", () => {
   it("rejects an item with invalid menuItemId (not UUID)", () => {
     const result = itemSchema.safeParse({
       menuItemId: "not-a-uuid",
+      menuItemName: "Tonkotsu Ramen",
       quantity: 1,
       unitPrice: 100,
       addedByUserId: "00000000-0000-0000-0000-000000000099",
@@ -143,6 +160,7 @@ describe("itemSchema", () => {
 describe("createOrderSchema", () => {
   const validItem = {
     menuItemId: "00000000-0000-0000-0000-000000000001",
+    menuItemName: "Tonkotsu Ramen",
     quantity: 2,
     unitPrice: 150,
     addedByUserId: "00000000-0000-0000-0000-000000000099",
@@ -189,6 +207,7 @@ describe("createOrderSchema", () => {
       items: [
         {
           menuItemId: "00000000-0000-0000-0000-000000000001",
+          menuItemName: "Tonkotsu Ramen",
           quantity: 1,
           unitPrice: 100,
           // missing addedByUserId
@@ -206,6 +225,7 @@ describe("createOrderSchema", () => {
 describe("addRoundSchema", () => {
   const validItem = {
     menuItemId: "00000000-0000-0000-0000-000000000001",
+    menuItemName: "Tonkotsu Ramen",
     quantity: 1,
     unitPrice: 150,
     addedByUserId: "00000000-0000-0000-0000-000000000099",
@@ -232,6 +252,7 @@ describe("addRoundSchema", () => {
         validItem,
         {
           menuItemId: "00000000-0000-0000-0000-000000000002",
+          menuItemName: "Shoyu Ramen",
           quantity: 2,
           unitPrice: 200,
           addedByUserId: "00000000-0000-0000-0000-000000000099",

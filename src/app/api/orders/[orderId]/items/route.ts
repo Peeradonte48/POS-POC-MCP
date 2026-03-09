@@ -80,7 +80,7 @@ export async function POST(
           .values({
             orderId,
             menuItemId: item.menuItemId,
-            menuItemName: item.menuItemId, // snapshot; client provides name or resolved server-side
+            menuItemName: item.menuItemName,
             unitPrice: String(item.unitPrice),
             quantity: item.quantity,
             notes: item.notes ?? null,

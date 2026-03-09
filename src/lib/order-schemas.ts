@@ -16,6 +16,7 @@ export const modifierSchema = z.object({
 
 export const itemSchema = z.object({
   menuItemId: z.string().uuid(),
+  menuItemName: z.string().min(1), // snapshot: name at time of ordering
   quantity: z.number().int().min(1),
   unitPrice: z.number().min(0),
   notes: z.string().optional(),
