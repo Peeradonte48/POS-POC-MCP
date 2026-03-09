@@ -68,7 +68,7 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **MBML-02**: Each brand has its own branding (logo, name, address, tax ID) on receipts
 - [ ] **MBML-03**: Central admin can manage all locations from single platform
 - [x] **MBML-04**: Location-level settings for printers, tables, tax, and service charge
-- [ ] **MBML-05**: Role-based access control (cashier, manager, admin) with appropriate permissions
+- [x] **MBML-05**: Role-based access control (cashier, manager, admin) with appropriate permissions
 
 ### Reporting
 
@@ -87,7 +87,7 @@ Requirements for initial release. Each maps to roadmap phases.
 
 - [ ] **UIUX-01**: POS interface works on tablets (iPad/Android) with touch-optimized UI
 - [ ] **UIUX-02**: POS interface works on desktop/terminal screens
-- [ ] **UIUX-03**: All UI components built with shadcn/ui component library
+- [x] **UIUX-03**: All UI components built with shadcn/ui component library
 - [ ] **UIUX-04**: Sub-second response time for order entry and payment processing
 - [ ] **UIUX-05**: Thai language support for menu items and receipts
 
@@ -151,8 +151,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | MBML-02 | Phase 1 | Complete (01-01) |
 | MBML-03 | Phase 1 | Pending |
 | MBML-04 | Phase 1 | Complete (01-01) |
-| MBML-05 | Phase 1 | Pending |
-| UIUX-03 | Phase 1 | Pending |
+| MBML-05 | Phase 1 | Complete |
+| UIUX-03 | Phase 1 | Complete |
 | ORDR-01 | Phase 2 | Pending |
 | ORDR-02 | Phase 2 | Pending |
 | ORDR-03 | Phase 2 | Pending |

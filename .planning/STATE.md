@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 01-01-PLAN.md
-last_updated: "2026-03-09T15:21:57.939Z"
-last_activity: 2026-03-09 -- Roadmap created
+stopped_at: Completed 01-02-PLAN.md
+last_updated: "2026-03-09T15:37:09Z"
+last_activity: 2026-03-09 -- Completed 01-02 (Auth & RBAC)
 progress:
   total_phases: 6
   completed_phases: 0
   total_plans: 4
-  completed_plans: 1
-  percent: 5
+  completed_plans: 2
+  percent: 50
 ---
 
 # Project State
@@ -26,28 +26,28 @@ See: .planning/PROJECT.md (updated 2026-03-09)
 ## Current Position
 
 Phase: 1 of 6 (Foundation & Multi-Brand Setup)
-Plan: 1 of 4 in current phase
+Plan: 2 of 4 in current phase
 Status: Executing
-Last activity: 2026-03-09 -- Completed 01-01 (Project scaffolding & database schema)
+Last activity: 2026-03-09 -- Completed 01-02 (Auth & RBAC)
 
-Progress: [█░░░░░░░░░] 5%
+Progress: [█████░░░░░] 50%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 1
-- Average duration: 8 min
-- Total execution time: 0.13 hours
+- Total plans completed: 2
+- Average duration: 5 min
+- Total execution time: 0.17 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 1 | 1 | 8 min | 8 min |
+| 1 | 2 | 10 min | 5 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (8 min)
-- Trend: N/A (first plan)
+- Last 5 plans: 01-01 (8 min), 01-02 (2 min)
+- Trend: Improving
 
 *Updated after each plan completion*
 
@@ -63,6 +63,8 @@ Recent decisions affecting current work:
 - [Roadmap]: UIUX-03 (shadcn/ui) in Phase 1 since it affects all UI from the start; device optimization (UIUX-01, UIUX-02) deferred to Phase 6
 - [01-01]: Used sonner instead of toast (deprecated in shadcn v4)
 - [01-01]: Shared-schema multi-tenancy via brandId FK on all tenant-scoped tables
+- [01-02]: Static RBAC with 8 resources (brands, locations, staff, menu, settings, reports, orders, sync)
+- [01-02]: Invalid session cookies cleared on redirect to prevent loops
 
 ### Pending Todos
 
@@ -77,6 +79,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-09T15:31:25Z
-Stopped at: Completed 01-01-PLAN.md
-Resume file: .planning/phases/01-foundation-multi-brand-setup/01-02-PLAN.md
+Last session: 2026-03-09T15:37:09Z
+Stopped at: Completed 01-02-PLAN.md
+Resume file: .planning/phases/01-foundation-multi-brand-setup/01-03-PLAN.md
