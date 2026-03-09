@@ -15,7 +15,7 @@ export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ orderId: string; itemId: string }> }
 ) {
-  const { session, error } = await requireAuth(request, "orders", "delete");
+  const { session, error } = await requireAuth(request, "orders", "update");
   if (error) return error;
 
   const { orderId, itemId } = await params;
