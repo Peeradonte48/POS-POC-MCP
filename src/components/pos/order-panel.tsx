@@ -148,7 +148,7 @@ export function OrderPanel({
       </div>
 
       {/* Order items */}
-      <ScrollArea className="flex-1">
+      <ScrollArea className="flex-1 min-h-0">
         {!hasAnyItems ? (
           <div className="flex h-full min-h-[200px] flex-col items-center justify-center gap-2 text-muted-foreground">
             <ShoppingBag className="h-10 w-10 opacity-20" />
